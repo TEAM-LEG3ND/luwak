@@ -1,8 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { Point } from 'geojson';
 
 @Entity({ name: 'shops' })
-export class Shop {
+export class Shop extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -12,9 +12,6 @@ export class Shop {
   @Column()
   description: string;
 
-  @Column()
-  latitude: number;
-
-  @Column()
-  longitude: number;
+  @Column({ type: 'point', nullable: true, spatialFeatureType: 'Point' })
+  location: Point;
 }
