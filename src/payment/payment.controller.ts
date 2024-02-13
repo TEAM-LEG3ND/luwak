@@ -7,6 +7,6 @@ export class PaymentController {
 
     @Post('confirm')
     confirmPayment(@Body() data: any): string {
-        return "test payment confirm response";
+        return this.paymentService.confirmPayment(data);
     }
 }
