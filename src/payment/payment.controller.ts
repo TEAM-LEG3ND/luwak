@@ -3,10 +3,10 @@ import { PaymentService } from './payment.service';
 
 @Controller('payment')
 export class PaymentController {
-    constructor(private readonly paymentService: PaymentService) {}
+  constructor(private readonly paymentService: PaymentService) {}
 
-    @Post('confirm')
-    confirmPayment(@Body() data: any): string {
-        return this.paymentService.confirmPayment(data);
-    }
+  @Post('confirm')
+  confirmPayment(@Body() data: any): string {
+    return this.paymentService.confirmPayment(data);
+  }
 }
