@@ -33,7 +33,7 @@ export class Payment extends BaseEntity{
     // 상점 ID (광교도리점)
     mId: string;
 
-    @Column()
+    @Column({ type: 'jsonb' })
     // 취소 객체
     cancels: object[];
 
