@@ -5,12 +5,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class PaymentService {
-    constructor(
-        @InjectRepository(Payment)
-        private readonly paymentRepository: Repository<Payment>,
-    ) {}
+  constructor(
+    @InjectRepository(Payment)
+    private readonly paymentRepository: Repository<Payment>,
+  ) {}
 
-    confirmPayment(data: any): string {
-        return 'this is test result';
-    }
+  confirmPayment(data: any): string {
+    return 'this is test result';
+  }
 }
