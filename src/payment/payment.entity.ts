@@ -1,10 +1,4 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  BaseEntity,
-  Unique,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, Unique } from 'typeorm';
 
 @Entity()
 @Unique(['paymentKey', 'orderId'])
