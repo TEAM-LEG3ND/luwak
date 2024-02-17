@@ -13,7 +13,7 @@ export class ShopController {
   }
 
   @Get('/:shopId/ingredients')
-  getIngredientsByShop(@Param() shopId: number): Promise<Ingredient[]> {
+  getIngredientsByShop(@Param(':shopId') shopId: number): Promise<Ingredient[]> {
     return this.shopService.getIngredientsByShop(shopId);
   }
 }
