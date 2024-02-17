@@ -1,20 +1,22 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { User } from 'src/users/user.entity';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { SignUpDto } from './dto/signup.dto';
 import * as bcrypt from 'bcryptjs';
 import { LogInDto } from './dto/login.dto';
+import { AccessTokenDto } from './dto/accessToken.dto';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @Inject('USERS_REPOSITORY')
+    @InjectRepository(User)
     private usersRepository: Repository<User>,
     private jwtService: JwtService,
   ) {}
 
-  async signUp(signUpDto: SignUpDto): Promise<{ token: string }> {
+  async signUp(signUpDto: SignUpDto): Promise<AccessTokenDto> {
     const { name, email, password } = signUpDto;
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await this.usersRepository.create({
@@ -24,10 +26,10 @@ export class AuthService {
     });
     await this.usersRepository.save(user);
     const token = this.jwtService.sign({ id: user.id });
-    return { token };
+    return new AccessTokenDto(token);
   }
 
-  async login(loginDto: LogInDto): Promise<{ token: string }> {
+  async login(loginDto: LogInDto): Promise<AccessTokenDto> {
     const { email, password } = loginDto;
     const user = await this.usersRepository.findOne({
       where: { email },
@@ -40,6 +42,6 @@ export class AuthService {
       throw new UnauthorizedException('Invalid email or password');
     }
     const token = this.jwtService.sign({ id: user.id });
-    return { token };
+    return new AccessTokenDto(token);
   }
 }
