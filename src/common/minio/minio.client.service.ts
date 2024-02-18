@@ -35,7 +35,7 @@ export class MinioClientService {
     return this.minio.client;
   }
 
-  public async delete(): Promise<void> {
-    return;
+  public async delete(objectName: string, targetBucket: string = this.DEFAULT_BUCKET): Promise<void> {
+    return await this.client.removeObject(targetBucket, objectName);
   }
 }
