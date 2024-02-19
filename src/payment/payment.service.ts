@@ -11,6 +11,6 @@ export class PaymentService {
   ) {}
 
   confirmPayment(data: any): string {
-    return "test confirm response";
+    return 'test confirm response';
   }
 }
