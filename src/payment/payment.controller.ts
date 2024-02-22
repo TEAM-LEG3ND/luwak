@@ -15,4 +15,9 @@ export class PaymentController {
   async findByPaymentKey(@Param() paymentKey: string): Promise<PaymentDto> {
     return this.paymentService.findByPaymentKey(paymentKey);
   }
+
+  @Get(':orderId')
+  async findByOrderId(@Param() orderId: string): Promise<PaymentDto> {
+    return this.paymentService.findByOrderId(orderId);
+  }
 }
