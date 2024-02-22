@@ -1,12 +1,18 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 import { PaymentService } from './payment.service';
+import { PaymentDto } from './Dto/payment.dto';
 
-@Controller('payment')
+@Controller('payments')
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
   @Post('confirm')
-  confirmPayment(@Body() data: any): string {
+  async confirmPayment(@Body() data: any): Promise<string> {
     return this.paymentService.confirmPayment(data);
+  }
+
+  @Get(':paymentKey')
+  async findByPaymentKey(@Param() paymentKey: string): Promise<PaymentDto> {
+    return this.paymentService.findByPaymentKey(paymentKey);
   }
 }
