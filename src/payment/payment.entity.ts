@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, Unique, OneToMany } from 'typeorm';
 import { Cancel } from './cancel.entity';
+import { PaymentStatus, PaymentType } from './payment.enum';
 
 @Entity()
 @Unique(['paymentKey', 'orderId'])
@@ -20,7 +21,7 @@ export class Payment extends BaseEntity {
 
   @Column()
   // [일반 결제, 간편 결제, 브랜드 페이]
-  type: string;
+  type: PaymentType;
 
   @Column()
   // 주문 ID
@@ -40,5 +41,5 @@ export class Payment extends BaseEntity {
 
   @Column()
   // 상태
-  status: string;
+  status: PaymentStatus;
 }

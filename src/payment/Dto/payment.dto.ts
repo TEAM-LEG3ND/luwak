@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { CancelDto } from './cancel.dto';
+import { PaymentStatus, PaymentType } from '../payment.enum';
 
 export class PaymentDto {
   @ApiProperty()
@@ -15,7 +16,7 @@ export class PaymentDto {
   balanceAmount: number;
 
   @ApiProperty()
-  type: string;
+  type: PaymentType;
 
   @ApiProperty()
   orderId: string;
@@ -30,5 +31,5 @@ export class PaymentDto {
   cancels: CancelDto[];
 
   @ApiProperty()
-  status: string;
+  status: PaymentStatus;
 }
