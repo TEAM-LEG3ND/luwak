@@ -24,4 +24,14 @@ export class PaymentService {
 
     return PaymentDto.fromPayment(payment);
   }
+
+  async findByOrderId(orderId: string): Promise<PaymentDto> {
+    const payment = await this.paymentRepository.findOne({ where: { orderId } });
+
+    if (!payment) {
+      throw new NotFoundException('Payment not found');
+    }
+
+    return PaymentDto.fromPayment(payment);
+  }
 }
