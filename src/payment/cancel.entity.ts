@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, BaseEntity, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, BaseEntity, Column, ManyToOne, CreateDateColumn } from 'typeorm';
 import { Payment } from './payment.entity';
 
 @Entity()
@@ -15,7 +15,7 @@ export class Cancel extends BaseEntity {
   @Column({ comment: '결제 취소 후 환불 가능한 잔액' })
   refundableAmount: number;
 
-  @Column({ comment: '결제 취소된 날짜 시간 정보 ISO 8601 형식 2022-01-01T00:00:00+09:00' })
+  @CreateDateColumn({ type: 'varchar', comment: '결제 취소된 날짜 시간 정보 ISO 8601 형식 2022-01-01T00:00:00+09:00' })
   canceledAt: string;
 
   @Column({ comment: '취소 거래의 키 값. 여러 건의 취소를 구분하기 위해 사용.' })
