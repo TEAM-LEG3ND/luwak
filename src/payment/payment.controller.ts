@@ -1,6 +1,7 @@
 import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { PaymentDto } from './Dto/payment.dto';
+import { CancelCreateDto } from './Dto/cancel.dto';
 
 @Controller('payments')
 export class PaymentController {
@@ -13,11 +14,19 @@ export class PaymentController {
 
   @Get(':paymentKey')
   async findByPaymentKey(@Param() paymentKey: string): Promise<PaymentDto> {
-    return this.paymentService.findByPaymentKey(paymentKey);
+    const payment = await this.paymentService.findByPaymentKey(paymentKey);
+    return PaymentDto.fromPayment(payment);
   }
 
   @Get(':orderId')
   async findByOrderId(@Param() orderId: string): Promise<PaymentDto> {
-    return this.paymentService.findByOrderId(orderId);
+    const payment = await this.paymentService.findByOrderId(orderId);
+    return PaymentDto.fromPayment(payment);
+  }
+
+  @Post(':paymentKey/cancel')
+  async cancelByPaymentKey(@Param() paymentKey: string, @Body() data: CancelCreateDto): Promise<PaymentDto> {
+    const payment = await this.paymentService.cancelByPaymentKey(paymentKey, data);
+    return PaymentDto.fromPayment(payment);
   }
 }
