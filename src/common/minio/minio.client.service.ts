@@ -22,13 +22,18 @@ export class MinioClientService {
     let filename = hashedFileName + ext;
     const fileName: string = `${filename}`;
     const fileBuffer = file.buffer;
-    this.client.putObject(targetBucket, fileName, fileBuffer, function (err, res) {
-      if (err) throw new HttpException('Error uploading file', HttpStatus.BAD_REQUEST);
-    });
-
-    return {
-      url: `${process.env.MINIO_ENDPOINT}:${process.env.MINIO_PORT}/${targetBucket}/${filename}`,
-    };
+    console.log(targetBucket, fileName, fileBuffer);
+    return this.client
+      .putObject(targetBucket, fileName, fileBuffer, metaData)
+      .then((res) => {
+        return {
+          url: `${process.env.MINIO_ENDPOINT}:${process.env.MINIO_PORT}/${targetBucket}/${filename}`,
+        };
+      })
+      .catch((err) => {
+        console.error(err);
+        throw new HttpException('Error uploading file', HttpStatus.BAD_REQUEST);
+      });
   }
 
   private get client() {
