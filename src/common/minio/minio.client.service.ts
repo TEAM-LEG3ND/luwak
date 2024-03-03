@@ -8,6 +8,8 @@ import { DeleteObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client
 export class MinioClientService {
   private readonly DEFAULT_BUCKET: string = 'luwak';
   private readonly SUPPORTED_FILE_EXT = new Set(['image']);
+  private readonly MINIO_ENDPOINT_PREFIX = process.env.MINIO_ENDPOINT;
+
   private minioClient: S3Client;
 
   constructor() {
@@ -25,8 +27,6 @@ export class MinioClientService {
   public async upload(file: BufferedFile, targetBucket: string = this.DEFAULT_BUCKET): Promise<MinioUploadResult> {
     const lastSlashIndex = file.mimetype.lastIndexOf('/');
     const fileType = file.mimetype.slice(0, lastSlashIndex);
-    const fileExt = file.mimetype.slice(lastSlashIndex + 1);
-    console.log(fileType, fileExt);
 
     if (!this.SUPPORTED_FILE_EXT.has(fileType)) {
       throw new HttpException(
@@ -40,7 +40,7 @@ export class MinioClientService {
 
     const uploadCommand = new PutObjectCommand({
       Bucket: targetBucket,
-      Key: `${hashedFileName}.${fileExt}`,
+      Key: `${hashedFileName}/${file.originalname}`,
       Body: file.buffer,
       ACL: 'public-read',
       ContentType: file.mimetype,
@@ -51,7 +51,7 @@ export class MinioClientService {
       .then((result) => {
         console.log(result);
         return {
-          url: `${targetBucket}/${hashedFileName}.${fileExt.toLowerCase()}`,
+          url: `${this.MINIO_ENDPOINT_PREFIX}${targetBucket}/${hashedFileName}/${file.originalname}`,
         };
       })
       .catch((error) => {
