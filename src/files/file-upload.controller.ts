@@ -1,4 +1,4 @@
-import { Controller, Get, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileUploadService } from './file-upload.service';
 import { BufferedFile } from 'src/common/minio/model/file.model';
 import { FileInterceptor } from '@nestjs/platform-express';
