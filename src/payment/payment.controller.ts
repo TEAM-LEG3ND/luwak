@@ -8,7 +8,7 @@ export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
   @Post('confirm')
-  async confirmPayment(@Body() data: any): Promise<string> {
+  async confirmPayment(@Body() data: any) {
     return this.paymentService.confirmPayment(data);
   }
 
