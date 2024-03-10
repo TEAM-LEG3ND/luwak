@@ -14,7 +14,7 @@ export class PaymentService {
     private readonly paymentRepository: Repository<Payment>,
     @InjectRepository(Cancel)
     private readonly cancelRepository: Repository<Cancel>,
-    
+
     private httpService: HttpService,
   ) {}
 
@@ -22,10 +22,9 @@ export class PaymentService {
     const { paymentKey, orderId, amount } = data;
 
     const widgetSecretKey = process.env.TOSSPAYMENTS_SECRET;
-    const encryptedSecretKey = 'Basic ' + Buffer.from(widgetSecretKey + ":").toString('base64');
-
-    try {
-      await firstValueFrom(this.httpService.post(
+    const encryptedSecretKey = 'Basic ' + Buffer.from(widgetSecretKey + ':').toString('base64');
+    await firstValueFrom(
+      this.httpService.post(
         'https://api.tosspayments.com/v1/payments/confirm',
         {
           orderId,
@@ -34,18 +33,18 @@ export class PaymentService {
         },
         {
           headers: {
-            Authorization : encryptedSecretKey,
-            'Content-Type' : 'application/json',
+            Authorization: encryptedSecretKey,
+            'Content-Type': 'application/json',
           },
         },
-      )).then((res) => {
+      ),
+    )
+      .then((res) => {
         return res.data;
-      }).catch((err) => {
+      })
+      .catch((err) => {
         throw err.response.data;
       });
-    } catch (e) {
-      throw e.response.data;
-    }
   }
 
   async findByPaymentKey(paymentKey: string): Promise<Payment> {
@@ -71,7 +70,7 @@ export class PaymentService {
   async cancelByPaymentKey(paymentKey: string, cancelCreateDto: CancelCreateDto): Promise<Payment> {
     const payment = await this.findByPaymentKey(paymentKey);
 
-    const cancel: Cancel = Cancel.fromCancelCreateDto(cancelCreateDto, payment);
+    const cancel: Cancel = CancelCreateDto.toCancel(cancelCreateDto, payment);
     this.cancelRepository.save(cancel);
 
     return payment;

@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Cancel } from '../cancel.entity';
+import { Payment } from '../payment.entity';
 
 export class CancelDto {
   @ApiProperty()
@@ -63,4 +64,19 @@ export class CancelCreateDto {
 
   @ApiProperty()
   refundableAmount: number;
+
+  constructor(cancelAmount: number, cancelReason: string, refundableAmount: number) {
+    this.cancelAmount = cancelAmount;
+    this.cancelReason = cancelReason;
+    this.refundableAmount = refundableAmount;
+  }
+
+  static toCancel(cancelCreateDto: CancelCreateDto, payment: Payment) {
+    return new Cancel(
+      cancelCreateDto.cancelAmount,
+      cancelCreateDto.cancelReason,
+      cancelCreateDto.refundableAmount,
+      payment,
+    );
+  }
 }
