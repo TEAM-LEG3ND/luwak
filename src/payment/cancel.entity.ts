@@ -1,6 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, BaseEntity, Column, ManyToOne, CreateDateColumn } from 'typeorm';
 import { Payment } from './payment.entity';
-import { CancelCreateDto } from './Dto/cancel.dto';
 
 @Entity()
 export class Cancel extends BaseEntity {
@@ -28,20 +27,11 @@ export class Cancel extends BaseEntity {
   @ManyToOne(() => Payment, (payment) => payment.cancels)
   payment: Payment;
 
-  constructor (
-    cancelAmount: number,
-    cancelReason: string,
-    refundableAmount: number,
-    payment: Payment,
-  ) {
+  constructor(cancelAmount: number, cancelReason: string, refundableAmount: number, payment: Payment) {
     super();
     this.cancelAmount = cancelAmount;
     this.cancelReason = cancelReason;
     this.refundableAmount = refundableAmount;
     this.payment = payment;
-  }
-
-  static fromCancelCreateDto(cancelCreateDto: CancelCreateDto, payment: Payment) {
-    return new Cancel(cancelCreateDto.cancelAmount, cancelCreateDto.cancelReason, cancelCreateDto.refundableAmount, payment);
   }
 }

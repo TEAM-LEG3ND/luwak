@@ -19,7 +19,7 @@ export class Payment extends BaseEntity {
   // 취소할 수 있는 금액
   balanceAmount: number;
 
-  @Column()
+  @Column({ type: 'enum', name: 'payment_type', enum: PaymentType })
   // [일반 결제, 간편 결제, 브랜드 페이]
   type: PaymentType;
 
@@ -39,7 +39,7 @@ export class Payment extends BaseEntity {
   // 취소 객체
   cancels: Cancel[];
 
-  @Column()
+  @Column({ type: 'enum', name: 'payment_status', enum: PaymentStatus })
   // 상태
   status: PaymentStatus;
 }
