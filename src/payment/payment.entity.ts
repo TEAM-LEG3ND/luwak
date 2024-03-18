@@ -1,4 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, Unique } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, Unique, OneToMany } from 'typeorm';
+
+import { Cancel } from './cancel.entity';
+
+import { PaymentStatus, PaymentType } from './payment.enum';
 
 @Entity()
 @Unique(['paymentKey', 'orderId'])
@@ -17,9 +21,9 @@ export class Payment extends BaseEntity {
   // 취소할 수 있는 금액
   balanceAmount: number;
 
-  @Column()
+  @Column({ type: 'enum', name: 'payment_type', enum: PaymentType })
   // [일반 결제, 간편 결제, 브랜드 페이]
-  type: string;
+  type: PaymentType;
 
   @Column()
   // 주문 ID
@@ -33,11 +37,11 @@ export class Payment extends BaseEntity {
   // 상점 ID (광교도리점)
   mId: string;
 
-  @Column({ type: 'jsonb' })
+  @OneToMany(() => Cancel, (cancel) => cancel.payment)
   // 취소 객체
-  cancels: object[];
+  cancels: Cancel[];
 
-  @Column()
+  @Column({ type: 'enum', name: 'payment_status', enum: PaymentStatus })
   // 상태
-  status: string;
+  status: PaymentStatus;
 }
