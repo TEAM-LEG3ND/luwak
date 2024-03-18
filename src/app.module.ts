@@ -6,8 +6,24 @@ import { PaymentModule } from './payment/payment.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { FileUploadModule } from './files/file-upload.module';
+import { RedisModule } from '@nestjs-modules/ioredis';
 @Module({
-  imports: [DatabaseModule, PaymentModule, AuthModule, UsersModule, FileUploadModule],
+  imports: [
+    DatabaseModule,
+    PaymentModule,
+    AuthModule,
+    UsersModule,
+    FileUploadModule,
+    RedisModule.forRootAsync({
+      useFactory: () => ({
+        type: 'single',
+        url: process.env.REDIS_URL,
+        options: {
+          password: process.env.REDIS_PASSWORD,
+        },
+      }),
+    }),
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
