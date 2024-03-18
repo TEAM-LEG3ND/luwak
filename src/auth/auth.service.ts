@@ -5,8 +5,11 @@ import { JwtService } from '@nestjs/jwt';
 import { SignUpDto } from './dto/signup.dto';
 import * as bcrypt from 'bcryptjs';
 import { LogInDto } from './dto/login.dto';
-import { AccessTokenDto } from './dto/accessToken.dto';
+import { NewAccessTokenDto, TokensDto } from './dto/token.dto';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as dotenv from 'dotenv';
+import { RefreshDto } from './dto/refresh.dto';
+dotenv.config();
 
 @Injectable()
 export class AuthService {
@@ -16,7 +19,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signUp(signUpDto: SignUpDto): Promise<AccessTokenDto> {
+  async signUp(signUpDto: SignUpDto): Promise<TokensDto> {
     const { name, email, password } = signUpDto;
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await this.usersRepository.create({
@@ -25,11 +28,12 @@ export class AuthService {
       password: hashedPassword,
     });
     await this.usersRepository.save(user);
-    const token = this.jwtService.sign({ id: user.id });
-    return new AccessTokenDto(token);
+    const accessToken = this.jwtService.sign({ id: user.id }, { expiresIn: process.env.ACCESS_EXPIRES });
+    const refreshToken = this.jwtService.sign({ id: user.id }, { expiresIn: process.env.REFRESH_EXPIRES });
+    return new TokensDto(accessToken, refreshToken);
   }
 
-  async login(loginDto: LogInDto): Promise<AccessTokenDto> {
+  async login(loginDto: LogInDto): Promise<TokensDto> {
     const { email, password } = loginDto;
     const user = await this.usersRepository.findOne({
       where: { email },
@@ -41,7 +45,29 @@ export class AuthService {
     if (!isPasswordMatched) {
       throw new UnauthorizedException('Invalid email or password');
     }
-    const token = this.jwtService.sign({ id: user.id });
-    return new AccessTokenDto(token);
+    const accessToken = this.jwtService.sign({ id: user.id });
+    const refreshToken = this.jwtService.sign({ id: user.id }, { expiresIn: process.env.REFRESH_EXPIRES });
+    return new TokensDto(accessToken, refreshToken);
+  }
+
+  async refresh(refreshDto: RefreshDto): Promise<NewAccessTokenDto> {
+    const { oldRefreshToken } = refreshDto;
+    try {
+      const decoded = this.jwtService.verify(oldRefreshToken);
+      const userId = decoded.id;
+      console.log(userId);
+      const user = await this.usersRepository.findOne({
+        where: {
+          id: userId,
+        },
+      });
+      if (!user) {
+        throw new UnauthorizedException('User not found');
+      }
+      const accessToken = this.jwtService.sign({ id: user.id }, { expiresIn: process.env.ACCESS_EXPIRES });
+      return new NewAccessTokenDto(accessToken);
+    } catch (error) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
   }
 }
