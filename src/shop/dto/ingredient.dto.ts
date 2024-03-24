@@ -5,6 +5,9 @@ export class IngredientDto {
   name: string;
 
   @ApiProperty()
+  price: number;
+
+  @ApiProperty()
   description: string;
 
   @ApiProperty()
