@@ -3,6 +3,8 @@ import { Repository } from 'typeorm';
 import { Shop } from './shop.entity';
 import { Ingredient } from './ingredient.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { IngredientDto } from './dto/ingredient.dto';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class ShopService {
@@ -22,6 +24,25 @@ export class ShopService {
         id: shopId,
       },
     });
+    return shop.ingredients;
+  }
+
+  async addIngredients(shopId: number, dto: IngredientDto[]): Promise<Ingredient[]> {
+    const shop = await this.shopRepository.findOne({
+      where: {
+        id: shopId,
+      },
+    });
+    //validate ingredients
+    dto.forEach((dto) =>
+      shop.ingredients.push({
+        id: randomUUID(),
+        name: dto.name,
+        description: dto.description,
+        thumbnail: dto.thumbnail,
+      }),
+    );
+    await this.shopRepository.save(shop);
     return shop.ingredients;
   }
 }
