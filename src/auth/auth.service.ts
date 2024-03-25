@@ -5,7 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { SignUpDto } from './dto/signup.dto';
 import * as bcrypt from 'bcryptjs';
 import { LogInDto } from './dto/login.dto';
-import { NewAccessTokenDto, TokensDto } from './dto/token.dto';
+import { TokensDto } from './dto/token.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as dotenv from 'dotenv';
 import { RefreshDto } from './dto/refresh.dto';
@@ -54,17 +54,16 @@ export class AuthService {
     if (!isPasswordMatched) {
       throw new UnauthorizedException('Invalid email or password');
     }
-    const accessToken = this.jwtService.sign({ id: user.id });
+    const accessToken = this.jwtService.sign({ id: user.id }, { expiresIn: process.env.ACCESS_EXPIRES });
     const refreshToken = this.jwtService.sign({ id: user.id }, { expiresIn: process.env.REFRESH_EXPIRES });
     return new TokensDto(accessToken, refreshToken);
   }
 
-  async refresh(refreshDto: RefreshDto): Promise<NewAccessTokenDto> {
+  async refresh(refreshDto: RefreshDto): Promise<TokensDto> {
     const { oldRefreshToken } = refreshDto;
     try {
       const decoded = this.jwtService.verify(oldRefreshToken);
       const userId = decoded.id;
-      console.log(userId);
       const user = await this.usersRepository.findOne({
         where: {
           id: userId,
@@ -73,8 +72,21 @@ export class AuthService {
       if (!user) {
         throw new UnauthorizedException('User not found');
       }
+
+      const refreshTokenExpiryTime = decoded.exp * 1000;
+      const currentTime = Date.now();
+      const timeDifference = refreshTokenExpiryTime - currentTime;
+      const closeToExpirationThreshold = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+      const isCloseToExpiration = timeDifference <= closeToExpirationThreshold;
+
       const accessToken = this.jwtService.sign({ id: user.id }, { expiresIn: process.env.ACCESS_EXPIRES });
-      return new NewAccessTokenDto(accessToken);
+
+      // Return both access token and refresh token if close to expiration
+      if (isCloseToExpiration) {
+        const newRefreshToken = this.jwtService.sign({ id: user.id }, { expiresIn: process.env.REFRESH_EXPIRES });
+        return new TokensDto(accessToken, newRefreshToken);
+      }
+      return new TokensDto(accessToken);
     } catch (error) {
       throw new UnauthorizedException('Invalid refresh token');
     }

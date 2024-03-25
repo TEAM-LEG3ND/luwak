@@ -1,8 +1,8 @@
-import { Controller, Post, Body, Get, Query } from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
 import { SignUpDto } from './dto/signup.dto';
 import { AuthService } from './auth.service';
 import { LogInDto } from './dto/login.dto';
-import { NewAccessTokenDto, TokensDto } from './dto/token.dto';
+import { TokensDto } from './dto/token.dto';
 import { RefreshDto } from './dto/refresh.dto';
 import { CheckEmailDto } from './dto/checkEmail.dto';
 import { CheckNicknameDto } from './dto/checkNickname.dto';
@@ -22,7 +22,7 @@ export class AuthController {
   }
 
   @Post('/refresh')
-  refresh(@Body() refreshDto: RefreshDto): Promise<NewAccessTokenDto> {
+  refresh(@Body() refreshDto: RefreshDto): Promise<TokensDto> {
     return this.authService.refresh(refreshDto);
   }
 
