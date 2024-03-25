@@ -9,6 +9,8 @@ import { NewAccessTokenDto, TokensDto } from './dto/token.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as dotenv from 'dotenv';
 import { RefreshDto } from './dto/refresh.dto';
+import { CheckEmailDto } from './dto/checkEmail.dto';
+import { CheckNicknameDto } from './dto/checkNickname.dto';
 dotenv.config();
 
 @Injectable()
@@ -20,10 +22,17 @@ export class AuthService {
   ) {}
 
   async signUp(signUpDto: SignUpDto): Promise<TokensDto> {
-    const { name, email, password } = signUpDto;
+    const { name, nickname, email, password } = signUpDto;
+    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    if (!passwordRegex.test(password)) {
+      throw new UnauthorizedException(
+        'Password must be at least 8 characters long and contain at least one letter, one digit, and one special character.',
+      );
+    }
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await this.usersRepository.create({
       name,
+      nickname,
       email,
       password: hashedPassword,
     });
@@ -69,5 +78,17 @@ export class AuthService {
     } catch (error) {
       throw new UnauthorizedException('Invalid refresh token');
     }
+  }
+
+  async checkEmailExists(checkEmailDto: CheckEmailDto): Promise<boolean> {
+    const { email } = checkEmailDto;
+    const user = await this.usersRepository.findOne({ where: { email } });
+    return !!user;
+  }
+
+  async checkNicknameExists(checkNicknameDto: CheckNicknameDto): Promise<boolean> {
+    const { nickname } = checkNicknameDto;
+    const user = await this.usersRepository.findOne({ where: { nickname } });
+    return !!user;
   }
 }

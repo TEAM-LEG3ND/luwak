@@ -1,9 +1,11 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get, Query } from '@nestjs/common';
 import { SignUpDto } from './dto/signup.dto';
 import { AuthService } from './auth.service';
 import { LogInDto } from './dto/login.dto';
 import { NewAccessTokenDto, TokensDto } from './dto/token.dto';
 import { RefreshDto } from './dto/refresh.dto';
+import { CheckEmailDto } from './dto/checkEmail.dto';
+import { CheckNicknameDto } from './dto/checkNickname.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -22,5 +24,17 @@ export class AuthController {
   @Post('/refresh')
   refresh(@Body() refreshDto: RefreshDto): Promise<NewAccessTokenDto> {
     return this.authService.refresh(refreshDto);
+  }
+
+  @Post('check-email-exists')
+  async checkEmailExists(@Body() checkEmailDto: CheckEmailDto): Promise<{ exists: boolean }> {
+    const exists = await this.authService.checkEmailExists(checkEmailDto);
+    return { exists };
+  }
+
+  @Post('check-nickname-exists')
+  async checkNicknameExists(@Body() checkNicknameDto: CheckNicknameDto): Promise<{ exists: boolean }> {
+    const exists = await this.authService.checkNicknameExists(checkNicknameDto);
+    return { exists };
   }
 }
