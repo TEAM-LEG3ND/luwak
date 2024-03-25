@@ -23,6 +23,7 @@ export class PaymentService {
 
   async confirmPayment(data: ConfirmPaymentDto) {
     const {paymentKey, orderId, amount} = data;
+    this.logger.warn(JSON.stringify(data));
 
     const widgetSecretKey = process.env.TOSSPAYMENTS_SECRET;
     const encryptedSecretKey = 'Basic ' + Buffer.from(widgetSecretKey + ':').toString('base64');
