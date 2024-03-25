@@ -6,9 +6,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   initSwaggerConfig(app);
   app.enableCors({
-    origin: '*',
-    methods: 'HEAD,POST,GET,PUT,PATCH,DELETE,OPTIONS',
-    allowedHeaders: 'Content-Type, Accept, Origin, Authorization'
+    origin: "*",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    preflightContinue: false,
+    optionsSuccessStatus: 204
   });
   await app.listen(3000);
 }
