@@ -7,7 +7,7 @@ async function bootstrap() {
   initSwaggerConfig(app);
   app.enableCors({
     origin: '*',
-    methods: 'POST, GET, PUT, PATCH, DELETED, OPTIONS',
+    methods: 'HEAD,POST,GET,PUT,PATCH,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type, Accept, Origin, Authorization'
   });
   await app.listen(3000);
