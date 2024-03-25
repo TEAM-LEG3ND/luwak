@@ -73,3 +73,14 @@ export class PaymentDto {
     );
   }
 }
+
+export class ConfirmPaymentDto {
+  @ApiProperty()
+  paymentKey: string;
+
+  @ApiProperty()
+  orderId: string;
+
+  @ApiProperty()
+  amount: number;
+}

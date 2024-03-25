@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CancelCreateDto } from './Dto/cancel.dto';
 import { Cancel } from './cancel.entity';
 import { firstValueFrom } from 'rxjs';
+import { ConfirmPaymentDto } from './Dto/payment.dto';
 
 @Injectable()
 export class PaymentService {
@@ -18,7 +19,7 @@ export class PaymentService {
     private httpService: HttpService,
   ) {}
 
-  async confirmPayment(data: any) {
+  async confirmPayment(data: ConfirmPaymentDto) {
     const { paymentKey, orderId, amount } = data;
 
     const widgetSecretKey = process.env.TOSSPAYMENTS_SECRET;

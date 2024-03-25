@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 import { PaymentService } from './payment.service';
-import { PaymentDto } from './Dto/payment.dto';
+import { ConfirmPaymentDto, PaymentDto } from './Dto/payment.dto';
 import { CancelCreateDto } from './Dto/cancel.dto';
 
 @Controller('payments')
@@ -8,7 +8,7 @@ export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
   @Post('confirm')
-  async confirmPayment(@Body() data: any) {
+  async confirmPayment(@Body() data: ConfirmPaymentDto) {
     return this.paymentService.confirmPayment(data);
   }
 
