@@ -1,21 +1,9 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  BaseEntity,
-  Unique,
-  OneToMany,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, Unique, OneToMany } from 'typeorm';
 
-import { 
-  Cancel,
- } from './cancel.entity';
+import { Cancel } from './cancel.entity';
 
-import { 
-  PaymentStatus, 
-  PaymentType,
- } from './payment.enum';
- 
+import { PaymentStatus, PaymentType } from './payment.enum';
+
 @Entity()
 @Unique(['paymentKey', 'orderId'])
 export class Payment extends BaseEntity {
