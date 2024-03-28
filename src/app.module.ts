@@ -5,9 +5,11 @@ import { DatabaseModule } from './config/database.module';
 import { PaymentModule } from './payment/payment.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { ShopModule } from './shop/shop.module';
 import { FileUploadModule } from './files/file-upload.module';
+
 @Module({
-  imports: [DatabaseModule, PaymentModule, AuthModule, UsersModule, FileUploadModule],
+  imports: [DatabaseModule, PaymentModule, AuthModule, UsersModule, ShopModule, FileUploadModule],
   controllers: [AppController],
   providers: [AppService],
 })
