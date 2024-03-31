@@ -13,7 +13,6 @@ export class ShopService {
   constructor(
     @InjectRepository(Shop)
     private readonly shopRepository: Repository<Shop>,
-
     @InjectRepository(Order)
     private readonly orderRepository: Repository<Order>,
   ) {}
@@ -44,15 +43,16 @@ export class ShopService {
       },
     });
 
-    dto.forEach((dto) =>
-      shop.ingredients.push({
+    dto.forEach((dto) => {
+      const newIngredient: Ingredient = {
         id: randomUUID(),
         price: dto.price,
         name: dto.name,
         description: dto.description,
         thumbnail: dto.thumbnail,
-      }),
-    );
+      };
+      shop.ingredients.push(newIngredient);
+    });
     return this.shopRepository.save(shop);
   }
 
