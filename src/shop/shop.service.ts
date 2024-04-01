@@ -13,7 +13,6 @@ export class ShopService {
   constructor(
     @InjectRepository(Shop)
     private readonly shopRepository: Repository<Shop>,
-
     @InjectRepository(Order)
     private readonly orderRepository: Repository<Order>,
   ) {}
@@ -32,7 +31,7 @@ export class ShopService {
     return shop.ingredients;
   }
 
-  async addIngredients(shopId: number, dto: IngredientDto[]): Promise<Ingredient[]> {
+  async addIngredients(shopId: number, dto: IngredientDto[]): Promise<Shop> {
     const validationResult = await this.validateIngredients(shopId, dto);
     if (!validationResult) {
       throw new HttpException('validation fail', 400);
@@ -44,17 +43,17 @@ export class ShopService {
       },
     });
 
-    dto.forEach((dto) =>
-      shop.ingredients.push({
+    dto.forEach((dto) => {
+      const newIngredient: Ingredient = {
         id: randomUUID(),
         price: dto.price,
         name: dto.name,
         description: dto.description,
         thumbnail: dto.thumbnail,
-      }),
-    );
-    await this.shopRepository.save(shop);
-    return shop.ingredients;
+      };
+      shop.ingredients.push(newIngredient);
+    });
+    return this.shopRepository.save(shop);
   }
 
   async createOrder(shopId: number, dto: IngredientDto[]): Promise<OrderDto> {

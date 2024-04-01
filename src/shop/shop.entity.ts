@@ -2,7 +2,7 @@ import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { Point } from 'geojson';
 import { Ingredient } from './ingredient.entity';
 
-@Entity({ name: 'shops' })
+@Entity({ name: 'shops', synchronize: false })
 export class Shop extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
