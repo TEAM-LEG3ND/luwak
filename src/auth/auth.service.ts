@@ -1,16 +1,17 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { User } from 'src/users/user.entity';
-import { Repository } from 'typeorm';
-import { JwtService } from '@nestjs/jwt';
-import { SignUpDto } from './dto/signup.dto';
+import {Injectable, UnauthorizedException} from '@nestjs/common';
+import {User} from 'src/users/user.entity';
+import {Repository} from 'typeorm';
+import {JwtService} from '@nestjs/jwt';
+import {SignUpDto} from './dto/signup.dto';
 import * as bcrypt from 'bcryptjs';
-import { LogInDto } from './dto/login.dto';
-import { TokensDto } from './dto/token.dto';
-import { InjectRepository } from '@nestjs/typeorm';
+import {LogInDto} from './dto/login.dto';
+import {TokensDto} from './dto/token.dto';
+import {InjectRepository} from '@nestjs/typeorm';
 import * as dotenv from 'dotenv';
-import { RefreshDto } from './dto/refresh.dto';
-import { CheckEmailDto } from './dto/checkEmail.dto';
-import { CheckNicknameDto } from './dto/checkNickname.dto';
+import {RefreshDto} from './dto/refresh.dto';
+import {CheckEmailDto} from './dto/checkEmail.dto';
+import {CheckNicknameDto} from './dto/checkNickname.dto';
+
 dotenv.config();
 
 @Injectable()
@@ -19,10 +20,11 @@ export class AuthService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
     private jwtService: JwtService,
-  ) {}
+  ) {
+  }
 
   async signUp(signUpDto: SignUpDto): Promise<TokensDto> {
-    const { name, nickname, email, password } = signUpDto;
+    const {name, nickname, email, password} = signUpDto;
     const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
     if (!passwordRegex.test(password)) {
       throw new UnauthorizedException(
@@ -37,15 +39,15 @@ export class AuthService {
       password: hashedPassword,
     });
     await this.usersRepository.save(user);
-    const accessToken = this.jwtService.sign({ id: user.id }, { expiresIn: process.env.ACCESS_EXPIRES });
-    const refreshToken = this.jwtService.sign({ id: user.id }, { expiresIn: process.env.REFRESH_EXPIRES });
+    const accessToken = this.jwtService.sign({id: user.id}, {expiresIn: process.env.ACCESS_EXPIRES});
+    const refreshToken = this.jwtService.sign({id: user.id}, {expiresIn: process.env.REFRESH_EXPIRES});
     return new TokensDto(accessToken, refreshToken);
   }
 
   async login(loginDto: LogInDto): Promise<TokensDto> {
-    const { email, password } = loginDto;
+    const {email, password} = loginDto;
     const user = await this.usersRepository.findOne({
-      where: { email },
+      where: {email},
     });
     if (!user) {
       throw new UnauthorizedException('Invalid email or password');
@@ -54,13 +56,13 @@ export class AuthService {
     if (!isPasswordMatched) {
       throw new UnauthorizedException('Invalid email or password');
     }
-    const accessToken = this.jwtService.sign({ id: user.id }, { expiresIn: process.env.ACCESS_EXPIRES });
-    const refreshToken = this.jwtService.sign({ id: user.id }, { expiresIn: process.env.REFRESH_EXPIRES });
+    const accessToken = this.jwtService.sign({id: user.id}, {expiresIn: process.env.ACCESS_EXPIRES});
+    const refreshToken = this.jwtService.sign({id: user.id}, {expiresIn: process.env.REFRESH_EXPIRES});
     return new TokensDto(accessToken, refreshToken);
   }
 
   async refresh(refreshDto: RefreshDto): Promise<TokensDto> {
-    const { oldRefreshToken } = refreshDto;
+    const {oldRefreshToken} = refreshDto;
     try {
       const decoded = this.jwtService.verify(oldRefreshToken);
       const userId = decoded.id;
@@ -79,11 +81,11 @@ export class AuthService {
       const closeToExpirationThreshold = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
       const isCloseToExpiration = timeDifference <= closeToExpirationThreshold;
 
-      const accessToken = this.jwtService.sign({ id: user.id }, { expiresIn: process.env.ACCESS_EXPIRES });
+      const accessToken = this.jwtService.sign({id: user.id}, {expiresIn: process.env.ACCESS_EXPIRES});
 
       // Return both access token and refresh token if close to expiration
       if (isCloseToExpiration) {
-        const newRefreshToken = this.jwtService.sign({ id: user.id }, { expiresIn: process.env.REFRESH_EXPIRES });
+        const newRefreshToken = this.jwtService.sign({id: user.id}, {expiresIn: process.env.REFRESH_EXPIRES});
         return new TokensDto(accessToken, newRefreshToken);
       }
       return new TokensDto(accessToken);
@@ -93,14 +95,14 @@ export class AuthService {
   }
 
   async checkEmailExists(checkEmailDto: CheckEmailDto): Promise<boolean> {
-    const { email } = checkEmailDto;
-    const user = await this.usersRepository.findOne({ where: { email } });
+    const {email} = checkEmailDto;
+    const user = await this.usersRepository.findOne({where: {email}});
     return !!user;
   }
 
   async checkNicknameExists(checkNicknameDto: CheckNicknameDto): Promise<boolean> {
-    const { nickname } = checkNicknameDto;
-    const user = await this.usersRepository.findOne({ where: { nickname } });
+    const {nickname} = checkNicknameDto;
+    const user = await this.usersRepository.findOne({where: {nickname}});
     return !!user;
   }
 }
