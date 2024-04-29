@@ -66,6 +66,10 @@ export class ShopService {
     const targetIngredients = new Set(ingredients);
     const orderIngredients = shop.ingredients.filter((ingredient) => targetIngredients.has(ingredient.id));
 
+    if (shop == null || targetIngredients.size === 0 || orderIngredients.length === 0) {
+      throw new HttpException('validation fail', 400);
+    }
+
     const newOrder = new Order();
     newOrder.ingredients = orderIngredients;
     newOrder.priceSum = BigInt(orderIngredients.map((dto) => dto.price).reduce((sum, current) => sum + current, 0));
