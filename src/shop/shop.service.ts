@@ -68,7 +68,7 @@ export class ShopService {
 
     await this.orderRepository.save(newOrder);
     return {
-      orderId: newOrder.id,
+      orderId: newOrder.id.toString(),
     };
   }
 

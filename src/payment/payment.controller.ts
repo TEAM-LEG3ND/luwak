@@ -21,7 +21,7 @@ export class PaymentController {
   }
 
   @Get(':orderId')
-  async findByOrderId(@Param() orderId: number): Promise<PaymentDto> {
+  async findByOrderId(@Param() orderId: string): Promise<PaymentDto> {
     const payment = await this.paymentService.findByOrderId(orderId);
     return PaymentDto.fromPayment(payment);
   }

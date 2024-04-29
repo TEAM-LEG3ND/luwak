@@ -18,7 +18,7 @@ export class PaymentDto {
   type: PaymentType;
 
   @ApiProperty()
-  orderId: number;
+  orderId: string;
 
   @ApiProperty()
   cancels: CancelDto[];
@@ -28,7 +28,7 @@ export class PaymentDto {
     paymentKey: string,
     totalAmount: number,
     type: PaymentType,
-    orderId: number,
+    orderId: string,
     cancels: CancelDto[],
   ) {
     this.id = id;
@@ -58,7 +58,7 @@ export class ConfirmPaymentDto {
 
   @ApiProperty()
   @IsNumber()
-  orderId: number;
+  orderId: string;
 
   @ApiProperty()
   @IsNumber()

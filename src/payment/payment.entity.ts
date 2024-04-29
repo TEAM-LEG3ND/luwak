@@ -23,7 +23,7 @@ export class Payment extends BaseEntity {
 
   @Column()
   // 주문 ID
-  orderId: number;
+  orderId: string;
 
   @OneToMany(() => Cancel, (cancel) => cancel.payment)
   // 취소 객체
