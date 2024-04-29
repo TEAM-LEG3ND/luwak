@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { CancelDto } from './cancel.dto';
-import { PaymentStatus, PaymentType } from '../payment.enum';
+import { PaymentType } from '../payment.enum';
 import { Payment } from '../payment.entity';
+import { IsString, IsNumber } from 'class-validator';
 
 export class PaymentDto {
   @ApiProperty()
@@ -14,48 +15,28 @@ export class PaymentDto {
   totalAmount: number;
 
   @ApiProperty()
-  balanceAmount: number;
-
-  @ApiProperty()
   type: PaymentType;
 
   @ApiProperty()
-  orderId: string;
-
-  @ApiProperty()
-  orderName: string;
-
-  @ApiProperty()
-  mId: string;
+  orderId: number;
 
   @ApiProperty()
   cancels: CancelDto[];
-
-  @ApiProperty()
-  status: PaymentStatus;
 
   constructor(
     id: number,
     paymentKey: string,
     totalAmount: number,
-    balanceAmount: number,
     type: PaymentType,
-    orderId: string,
-    orderName: string,
-    mId: string,
+    orderId: number,
     cancels: CancelDto[],
-    status: PaymentStatus,
   ) {
     this.id = id;
     this.paymentKey = paymentKey;
     this.totalAmount = totalAmount;
-    this.balanceAmount = balanceAmount;
     this.type = type;
     this.orderId = orderId;
-    this.orderName = orderName;
-    this.mId = mId;
     this.cancels = cancels;
-    this.status = status;
   }
 
   static fromPayment(payment: Payment) {
@@ -63,24 +44,23 @@ export class PaymentDto {
       payment.id,
       payment.paymentKey,
       payment.totalAmount,
-      payment.balanceAmount,
       payment.type,
       payment.orderId,
-      payment.orderName,
-      payment.mId,
       payment.cancels,
-      payment.status,
     );
   }
 }
 
 export class ConfirmPaymentDto {
   @ApiProperty()
+  @IsString()
   paymentKey: string;
 
   @ApiProperty()
-  orderId: string;
+  @IsNumber()
+  orderId: number;
 
   @ApiProperty()
+  @IsNumber()
   amount: number;
 }

@@ -2,11 +2,13 @@ import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { ConfirmPaymentDto, PaymentDto } from './Dto/payment.dto';
 import { CancelCreateDto } from './Dto/cancel.dto';
+import { ApiBody } from '@nestjs/swagger';
 
 @Controller('payments')
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
+  @ApiBody({ type: ConfirmPaymentDto })
   @Post('confirm')
   async confirmPayment(@Body() data: ConfirmPaymentDto) {
     return this.paymentService.confirmPayment(data);
@@ -19,7 +21,7 @@ export class PaymentController {
   }
 
   @Get(':orderId')
-  async findByOrderId(@Param() orderId: string): Promise<PaymentDto> {
+  async findByOrderId(@Param() orderId: number): Promise<PaymentDto> {
     const payment = await this.paymentService.findByOrderId(orderId);
     return PaymentDto.fromPayment(payment);
   }
