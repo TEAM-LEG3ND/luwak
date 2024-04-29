@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, InternalServerErrorException } from '@nestjs/common';
 import { User } from 'src/users/user.entity';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
@@ -23,24 +23,28 @@ export class AuthService {
   ) {}
 
   async signUp(signUpDto: SignUpDto): Promise<TokensDto> {
-    const { name, nickname, email, password } = signUpDto;
-    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-    if (!passwordRegex.test(password)) {
-      throw new UnauthorizedException(
-        'Password must be at least 8 characters long and contain at least one letter, one digit, and one special character.',
-      );
+    try {
+      const { name, nickname, email, password } = signUpDto;
+      const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+      if (!passwordRegex.test(password)) {
+        throw new UnauthorizedException(
+          'Password must be at least 8 characters long and contain at least one letter, one digit, and one special character.',
+        );
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const user = await this.usersRepository.create({
+        name,
+        nickname,
+        email,
+        password: hashedPassword,
+      });
+      await this.usersRepository.save(user);
+      const accessToken = this.jwtService.sign({ id: user.id }, { expiresIn: process.env.ACCESS_EXPIRES });
+      const refreshToken = this.jwtService.sign({ id: user.id }, { expiresIn: process.env.REFRESH_EXPIRES });
+      return new TokensDto(accessToken, refreshToken);
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
     }
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await this.usersRepository.create({
-      name,
-      nickname,
-      email,
-      password: hashedPassword,
-    });
-    await this.usersRepository.save(user);
-    const accessToken = this.jwtService.sign({ id: user.id }, { expiresIn: process.env.ACCESS_EXPIRES });
-    const refreshToken = this.jwtService.sign({ id: user.id }, { expiresIn: process.env.REFRESH_EXPIRES });
-    return new TokensDto(accessToken, refreshToken);
   }
 
   async login(loginDto: LogInDto): Promise<TokensDto> {

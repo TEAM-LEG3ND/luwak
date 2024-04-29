@@ -20,14 +20,8 @@ export class UsersController {
     return user;
   }
 
-  @Post()
-  async createUser(@Body() createUserDto: CreateUserDto) {
-    const newUser = await this.usersService.createUser(createUserDto);
-    return newUser;
-  }
-
   @Delete(':id')
-  @UseGuards(AuthGuard('jwt'))
+  //@UseGuards(AuthGuard('jwt'))
   async deleteById(@Param('id') id: string): Promise<User> {
     const user = this.usersService.deleteById(Number(id));
     return user;
