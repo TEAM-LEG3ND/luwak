@@ -57,7 +57,7 @@ export class ConfirmPaymentDto {
   paymentKey: string;
 
   @ApiProperty()
-  @IsNumber()
+  @IsString()
   orderId: string;
 
   @ApiProperty()
