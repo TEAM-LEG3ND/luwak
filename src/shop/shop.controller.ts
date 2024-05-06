@@ -34,8 +34,16 @@ export class ShopController {
   @ApiOkResponse({ description: '정상적으로 주문 생성 완료', type: OrderDto })
   @ApiBody({ type: [CreateOrderDto] })
   @Post('/:shopId/order')
-  createOrder(@Param(':shopId') shopId: number, @Body() createOrder: CreateOrderDto) {
+  createOrder(@Param(':shopId') shopId: number, @Body() createOrder: CreateOrderDto): Promise<OrderDto> {
     const userId = 1;
     return this.shopService.createOrder(shopId, userId, createOrder.ingredientIds, createOrder.type);
+  }
+
+  @ApiOperation({ summary: '주문 목록 조회', description: '사용자가 생성한 주문 조회' })
+  @ApiOkResponse({ type: OrderDto, isArray: true })
+  @Get('/orders')
+  getOrders(): Promise<OrderDto[]> {
+    const userId = 1;
+    return this.shopService.getOrdersByUserId(userId);
   }
 }
