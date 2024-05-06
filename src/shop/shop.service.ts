@@ -77,11 +77,20 @@ export class ShopService {
     newOrder.userId = userId;
     newOrder.priceSum = BigInt(orderIngredients.map((dto) => dto.price).reduce((sum, current) => sum + current, 0));
 
-    await this.orderRepository.save(newOrder);
-    return {
-      orderId: newOrder.id,
-      type: type,
-    };
+    return await this.orderRepository.save(newOrder).then((entity) => OrderDto.fromEntity(entity));
+  }
+
+  async getOrdersByUserId(userId: number): Promise<OrderDto[]> {
+    return await this.orderRepository
+      .find({
+        where: {
+          userId: userId,
+        },
+        order: {
+          created_at: 'DESC',
+        },
+      })
+      .then((entities) => entities.map((entity) => OrderDto.fromEntity(entity)));
   }
 
   private async validateIngredients(shopId: number, dto: IngredientDto[]): Promise<boolean> {
