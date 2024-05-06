@@ -8,6 +8,9 @@ import { randomUUID } from 'crypto';
 import { Order } from './entity/order.entity';
 import { OrderDto } from './dto/order.dto';
 import { OrderType } from 'src/common/domain/order-type';
+import { PaginationOption } from 'src/common/pagination/pagination-option';
+import { PageResponse } from 'src/common/pagination/pagination-response';
+import { PaginationMeta } from 'src/common/pagination/pagination-meta';
 
 @Injectable()
 export class ShopService {
@@ -80,17 +83,28 @@ export class ShopService {
     return await this.orderRepository.save(newOrder).then((entity) => OrderDto.fromEntity(entity));
   }
 
-  async getOrdersByUserId(userId: number): Promise<OrderDto[]> {
-    return await this.orderRepository
-      .find({
+  async getOrdersByUserId(userId: number, pageOption: PaginationOption): Promise<PageResponse<OrderDto>> {
+    const queryBuilder = this.orderRepository.createQueryBuilder('getOrdersByUserId');
+
+    queryBuilder
+      .orderBy('createdAt', pageOption.order)
+      .skip(pageOption.skip)
+      .take(pageOption.take)
+      .where({
         where: {
           userId: userId,
         },
-        order: {
-          created_at: 'DESC',
-        },
-      })
-      .then((entities) => entities.map((entity) => OrderDto.fromEntity(entity)));
+      });
+
+    const count = await queryBuilder.getCount();
+    const { entities } = await queryBuilder.getRawAndEntities();
+
+    const pageMeta = new PaginationMeta({ pageOption: pageOption, itemCount: count });
+
+    return new PageResponse(
+      entities.map((entity) => OrderDto.fromEntity(entity)),
+      pageMeta,
+    );
   }
 
   private async validateIngredients(shopId: number, dto: IngredientDto[]): Promise<boolean> {
