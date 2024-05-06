@@ -57,7 +57,7 @@ export class ShopService {
     return this.shopRepository.save(shop);
   }
 
-  async createOrder(shopId: number, ingredients: string[], type: OrderType): Promise<OrderDto> {
+  async createOrder(shopId: number, userId: number, ingredients: string[], type: OrderType): Promise<OrderDto> {
     const shop = await this.shopRepository.findOne({
       where: {
         id: shopId,
@@ -74,6 +74,7 @@ export class ShopService {
     const newOrder = new Order();
     newOrder.ingredients = orderIngredients;
     newOrder.type = type;
+    newOrder.userId = userId;
     newOrder.priceSum = BigInt(orderIngredients.map((dto) => dto.price).reduce((sum, current) => sum + current, 0));
 
     await this.orderRepository.save(newOrder);
