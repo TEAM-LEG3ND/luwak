@@ -73,6 +73,7 @@ export class ShopService {
 
     const newOrder = new Order();
     newOrder.ingredients = orderIngredients;
+    newOrder.type = type;
     newOrder.priceSum = BigInt(orderIngredients.map((dto) => dto.price).reduce((sum, current) => sum + current, 0));
 
     await this.orderRepository.save(newOrder);
