@@ -10,13 +10,14 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true,
       skipMissingProperties: true,
-    })
+      transform: true,
+    }),
   );
   app.enableCors({
-    origin: "*",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     preflightContinue: false,
-    optionsSuccessStatus: 204
+    optionsSuccessStatus: 204,
   });
   await app.listen(3000);
 }
