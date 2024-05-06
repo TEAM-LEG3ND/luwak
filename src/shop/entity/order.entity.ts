@@ -11,6 +11,9 @@ export class Order extends BaseEntity {
   @Column({ type: 'int' })
   userId: number;
 
+  @Column({ type: 'int' })
+  shopId: number;
+
   @Column({ type: 'bigint' })
   priceSum: BigInt;
 

@@ -76,6 +76,7 @@ export class ShopService {
 
     const newOrder = new Order();
     newOrder.ingredients = orderIngredients;
+    newOrder.shopId = shopId;
     newOrder.type = type;
     newOrder.userId = userId;
     newOrder.priceSum = BigInt(orderIngredients.map((dto) => dto.price).reduce((sum, current) => sum + current, 0));
