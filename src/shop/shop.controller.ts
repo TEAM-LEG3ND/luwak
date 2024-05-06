@@ -5,6 +5,7 @@ import { Ingredient } from './entity/ingredient.entity';
 import { IngredientDto } from './dto/ingredient.dto';
 import { ApiBody, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { OrderDto } from './dto/order.dto';
 
 @Controller('shop')
 export class ShopController {
@@ -30,7 +31,7 @@ export class ShopController {
   }
 
   @ApiOperation({ summary: '주문 생성', description: '해당 매장에 주문 생성' })
-  @ApiOkResponse({ description: '정상적으로 주문 생성 완료' })
+  @ApiOkResponse({ description: '정상적으로 주문 생성 완료', type: OrderDto })
   @ApiBody({ type: [CreateOrderDto] })
   @Post('/:shopId/order')
   createOrder(@Param(':shopId') shopId: number, @Body() createOrder: CreateOrderDto) {
