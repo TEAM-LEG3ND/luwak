@@ -6,23 +6,22 @@ import { TokensDto } from './dto/token.dto';
 import { RefreshDto } from './dto/refresh.dto';
 import { CheckEmailDto } from './dto/checkEmail.dto';
 import { CheckNicknameDto } from './dto/checkNickname.dto';
-import { Request } from 'express';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Post('/signup')
+  @Post('signup')
   signUp(@Body() signUpDto: SignUpDto): Promise<TokensDto> {
     return this.authService.signUp(signUpDto);
   }
 
-  @Post('/login')
+  @Post('login')
   login(@Body() loginDto: LogInDto): Promise<TokensDto> {
     return this.authService.login(loginDto);
   }
 
-  @Post('/refresh')
+  @Post('refresh')
   refresh(@Body() refreshDto: RefreshDto): Promise<TokensDto> {
     return this.authService.refresh(refreshDto);
   }

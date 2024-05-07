@@ -24,7 +24,7 @@ export class AuthService {
 
   async signUp(signUpDto: SignUpDto): Promise<TokensDto> {
     try {
-      const { name, nickname, email, password } = signUpDto;
+      const { nickname, email, password } = signUpDto;
       const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
       if (!passwordRegex.test(password)) {
         throw new UnauthorizedException(
@@ -33,7 +33,6 @@ export class AuthService {
       }
       const hashedPassword = await bcrypt.hash(password, 10);
       const user = await this.usersRepository.create({
-        name,
         nickname,
         email,
         password: hashedPassword,
