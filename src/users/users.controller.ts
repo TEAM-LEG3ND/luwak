@@ -21,7 +21,7 @@ export class UsersController {
   }
 
   @Delete(':id')
-  //@UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'))
   async deleteById(@Param('id') id: string): Promise<User> {
     const user = this.usersService.deleteById(Number(id));
     return user;
