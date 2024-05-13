@@ -8,7 +8,7 @@ import { randomUUID } from 'crypto';
 import { Order } from './entity/order.entity';
 import { OrderDto } from './dto/order.dto';
 import { OrderType } from 'src/common/domain/order-type';
-import { PaginationOption } from 'src/common/pagination/pagination-option';
+import { OffsetPaginationOption } from 'src/common/pagination/offset-pagination-option';
 import { PageResponse } from 'src/common/pagination/pagination-response';
 import { PaginationMeta } from 'src/common/pagination/pagination-meta';
 
@@ -84,7 +84,7 @@ export class ShopService {
     return await this.orderRepository.save(newOrder).then((entity) => OrderDto.fromEntity(entity));
   }
 
-  async getOrdersByUserId(userId: number, pageOption: PaginationOption): Promise<PageResponse<OrderDto>> {
+  async getOrdersByUserId(userId: number, pageOption: OffsetPaginationOption): Promise<PageResponse<OrderDto>> {
     const queryBuilder = this.orderRepository.createQueryBuilder('getOrdersByUserId');
 
     queryBuilder

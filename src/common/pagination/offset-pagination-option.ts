@@ -3,7 +3,7 @@ import { IsEnum, IsInt, IsOptional, Max, Min } from 'class-validator';
 import { PaginationOrder } from './pagination-order';
 import { Type } from 'class-transformer';
 
-export class PaginationOption {
+export class OffsetPaginationOption {
   @ApiPropertyOptional({ enum: PaginationOrder, default: PaginationOrder.ASC })
   @IsEnum(PaginationOrder)
   @IsOptional()

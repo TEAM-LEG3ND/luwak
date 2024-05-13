@@ -1,6 +1,6 @@
-import { PaginationOption } from './pagination-option';
+import { OffsetPaginationOption } from './offset-pagination-option';
 
 export interface PaginationParameter {
-  pageOption: PaginationOption;
+  pageOption: OffsetPaginationOption;
   itemCount: number;
 }

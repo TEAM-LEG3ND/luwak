@@ -7,7 +7,7 @@ import { ApiBody, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderDto } from './dto/order.dto';
 import { PageResponse } from 'src/common/pagination/pagination-response';
-import { PaginationOption } from 'src/common/pagination/pagination-option';
+import { OffsetPaginationOption } from 'src/common/pagination/offset-pagination-option';
 
 @Controller('shop')
 export class ShopController {
@@ -44,7 +44,7 @@ export class ShopController {
   @ApiOperation({ summary: '주문 목록 조회', description: '사용자가 생성한 주문 조회' })
   @ApiOkResponse({ type: OrderDto, isArray: true })
   @Get('/orders')
-  getOrders(@Query() pageOption: PaginationOption): Promise<PageResponse<OrderDto>> {
+  getOrders(@Query() pageOption: OffsetPaginationOption): Promise<PageResponse<OrderDto>> {
     const userId = 1;
     return this.shopService.getOrdersByUserId(userId, pageOption);
   }
