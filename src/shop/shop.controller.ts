@@ -27,7 +27,7 @@ export class ShopController {
 
   @ApiBody({ type: [IngredientDto] })
   @Post('/:shopId/order')
-  createOrder(@Param(':shopId') shopId: number, @Body() ingerdientDtos: IngredientDto[]) {
-    return this.shopService.createOrder(shopId, ingerdientDtos);
+  createOrder(@Param(':shopId') shopId: number, @Body() ingredientIds: string[]) {
+    return this.shopService.createOrder(shopId, ingredientIds);
   }
 }

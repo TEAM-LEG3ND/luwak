@@ -56,15 +56,23 @@ export class ShopService {
     return this.shopRepository.save(shop);
   }
 
-  async createOrder(shopId: number, dto: IngredientDto[]): Promise<OrderDto> {
-    const validationResult = await this.validateIngredients(shopId, dto);
-    if (!validationResult) {
+  async createOrder(shopId: number, ingredients: string[]): Promise<OrderDto> {
+    const shop = await this.shopRepository.findOne({
+      where: {
+        id: shopId,
+      },
+    });
+
+    const targetIngredients = new Set(ingredients);
+    const orderIngredients = shop.ingredients.filter((ingredient) => targetIngredients.has(ingredient.id));
+
+    if (shop == null || targetIngredients.size === 0 || orderIngredients.length === 0) {
       throw new HttpException('validation fail', 400);
     }
 
     const newOrder = new Order();
-    newOrder.ingredients = dto.map((dto) => new Ingredient());
-    newOrder.priceSum = BigInt(dto.map((dto) => dto.price).reduce((sum, current) => sum + current, 0));
+    newOrder.ingredients = orderIngredients;
+    newOrder.priceSum = BigInt(orderIngredients.map((dto) => dto.price).reduce((sum, current) => sum + current, 0));
 
     await this.orderRepository.save(newOrder);
     return {
@@ -72,7 +80,7 @@ export class ShopService {
     };
   }
 
-  private async validateIngredients(shopId: number, dto: IngredientDto[]): Promise<Boolean> {
+  private async validateIngredients(shopId: number, dto: IngredientDto[]): Promise<boolean> {
     const nonNull = dto.every((dto) => dto.name != null && dto.thumbnail != null);
     const priceValid = dto.every((dto) => dto.price >= 0);
     const shop = await this.shopRepository.findOne({
