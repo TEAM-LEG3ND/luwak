@@ -28,7 +28,6 @@ export class UserRepository {
   async createUser(createUserDto: CreateUserDto): Promise<User | undefined> {
     const newUser = await this.usersRepository.create(createUserDto);
     await this.usersRepository.save({
-      name: createUserDto.name,
       nickname: createUserDto.nickname,
       email: createUserDto.email,
       password: createUserDto.password,

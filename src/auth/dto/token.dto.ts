@@ -1,9 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsString } from 'class-validator';
 
 export class TokensDto {
   @ApiProperty()
+  @IsString()
   readonly accessToken: string;
   @ApiProperty()
+  @IsString()
   readonly refreshToken?: string;
 
   constructor(accessToken: string, refreshToken?: string) {
@@ -14,6 +17,7 @@ export class TokensDto {
 
 export class NewAccessTokenDto {
   @ApiProperty()
+  @IsString()
   newAccessToken: string;
 
   constructor(newAccessToken: string) {
@@ -23,6 +27,7 @@ export class NewAccessTokenDto {
 
 export class RefreshTokenDto {
   @ApiProperty()
+  @IsString()
   refreshToken: string;
 
   constructor(refreshToken: string) {
