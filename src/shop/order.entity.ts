@@ -15,5 +15,5 @@ export class Order extends BaseEntity {
   ingredients: Ingredient[];
 
   @Column({ type: 'enum', enum: OrderStatus })
-  status: OrderStatus = OrderStatus.READY;
+  status: OrderStatus;
 }
