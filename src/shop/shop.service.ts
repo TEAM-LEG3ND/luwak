@@ -1,12 +1,13 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Shop } from './shop.entity';
-import { Ingredient } from './ingredient.entity';
+import { Ingredient } from './entity/ingredient.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IngredientDto } from './dto/ingredient.dto';
 import { randomUUID } from 'crypto';
-import { Order } from './order.entity';
+import { Order } from './entity/order.entity';
 import { OrderDto } from './dto/order.dto';
+import { OrderType } from 'src/common/domain/order-type';
 
 @Injectable()
 export class ShopService {
@@ -56,7 +57,7 @@ export class ShopService {
     return this.shopRepository.save(shop);
   }
 
-  async createOrder(shopId: number, ingredients: string[]): Promise<OrderDto> {
+  async createOrder(shopId: number, ingredients: string[], type: OrderType): Promise<OrderDto> {
     const shop = await this.shopRepository.findOne({
       where: {
         id: shopId,
@@ -72,11 +73,13 @@ export class ShopService {
 
     const newOrder = new Order();
     newOrder.ingredients = orderIngredients;
+    newOrder.type = type;
     newOrder.priceSum = BigInt(orderIngredients.map((dto) => dto.price).reduce((sum, current) => sum + current, 0));
 
     await this.orderRepository.save(newOrder);
     return {
       orderId: newOrder.id,
+      type: type,
     };
   }
 

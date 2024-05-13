@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Payment } from './payment.entity';
 import { Cancel } from './cancel.entity';
 import { HttpModule } from '@nestjs/axios';
-import { Order } from 'src/shop/order.entity';
+import { Order } from 'src/shop/entity/order.entity';
 
 @Module({
   imports: [
