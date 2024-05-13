@@ -8,6 +8,9 @@ import { randomUUID } from 'crypto';
 import { Order } from './entity/order.entity';
 import { OrderDto } from './dto/order.dto';
 import { OrderType } from 'src/common/domain/order-type';
+import { OffsetPaginationOption } from 'src/common/pagination/offset-pagination-option';
+import { PageResponse } from 'src/common/pagination/pagination-response';
+import { PaginationMeta } from 'src/common/pagination/pagination-meta';
 
 @Injectable()
 export class ShopService {
@@ -57,7 +60,7 @@ export class ShopService {
     return this.shopRepository.save(shop);
   }
 
-  async createOrder(shopId: number, ingredients: string[], type: OrderType): Promise<OrderDto> {
+  async createOrder(shopId: number, userId: number, ingredients: string[], type: OrderType): Promise<OrderDto> {
     const shop = await this.shopRepository.findOne({
       where: {
         id: shopId,
@@ -73,14 +76,36 @@ export class ShopService {
 
     const newOrder = new Order();
     newOrder.ingredients = orderIngredients;
+    newOrder.shopId = shopId;
     newOrder.type = type;
+    newOrder.userId = userId;
     newOrder.priceSum = BigInt(orderIngredients.map((dto) => dto.price).reduce((sum, current) => sum + current, 0));
 
-    await this.orderRepository.save(newOrder);
-    return {
-      orderId: newOrder.id,
-      type: type,
-    };
+    return await this.orderRepository.save(newOrder).then((entity) => OrderDto.fromEntity(entity));
+  }
+
+  async getOrdersByUserId(userId: number, pageOption: OffsetPaginationOption): Promise<PageResponse<OrderDto>> {
+    const queryBuilder = this.orderRepository.createQueryBuilder('getOrdersByUserId');
+
+    queryBuilder
+      .orderBy('createdAt', pageOption.order)
+      .skip(pageOption.skip)
+      .take(pageOption.take)
+      .where({
+        where: {
+          userId: userId,
+        },
+      });
+
+    const count = await queryBuilder.getCount();
+    const { entities } = await queryBuilder.getRawAndEntities();
+
+    const pageMeta = new PaginationMeta({ pageOption: pageOption, itemCount: count });
+
+    return new PageResponse(
+      entities.map((entity) => OrderDto.fromEntity(entity)),
+      pageMeta,
+    );
   }
 
   private async validateIngredients(shopId: number, dto: IngredientDto[]): Promise<boolean> {
