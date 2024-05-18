@@ -31,10 +31,8 @@ export class UsersController {
 
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'))
-  async deleteById(@Param('id') id: string) /*: Promise<User>*/ {
-    console.log('works');
-    //const user = this.usersService.deleteById(Number(id));
-    //return user;
-    return;
+  async deleteById(@Param('id') id: string): Promise<User> {
+    const user = this.usersService.deleteById(Number(id));
+    return user;
   }
 }

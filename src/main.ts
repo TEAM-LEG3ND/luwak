@@ -2,7 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { initSwaggerConfig } from './config/swagger-config';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import express from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,6 +10,7 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true,
       skipMissingProperties: true,
+      transform: true,
     }),
   );
   app.enableCors({
