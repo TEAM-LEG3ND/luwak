@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { Point } from 'geojson';
-import { Ingredient } from './ingredient.entity';
+import { Ingredient } from './entity/ingredient.entity';
 import { BaseEntity } from 'src/common/base.entity';
 
 
