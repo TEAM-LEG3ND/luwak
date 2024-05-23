@@ -21,14 +21,14 @@ export class ShopController {
 
   @ApiOperation({ summary: '매장 재료 목록 조회', description: '해당 매장의 재료 목록 조회' })
   @Get('/:shopId/ingredients')
-  getIngredientsByShop(@Param(':shopId') shopId: number): Promise<Ingredient[]> {
+  getIngredientsByShop(@Param(':shopId') shopId: string): Promise<Ingredient[]> {
     return this.shopService.getIngredientsByShop(shopId);
   }
 
   @ApiOperation({ summary: '매장 재료 추가', description: '해당 매장에 재료 벌크 추가' })
   @ApiBody({ type: [IngredientDto] })
   @Post('/:shopId/ingredients')
-  createIngredients(@Param(':shopId') shopId: number, @Body() ingredientDtos: IngredientDto[]): Promise<Shop> {
+  createIngredients(@Param(':shopId') shopId: string, @Body() ingredientDtos: IngredientDto[]): Promise<Shop> {
     return this.shopService.addIngredients(shopId, ingredientDtos);
   }
 
@@ -36,7 +36,7 @@ export class ShopController {
   @ApiOkResponse({ description: '정상적으로 주문 생성 완료', type: OrderDto })
   @ApiBody({ type: [CreateOrderDto] })
   @Post('/:shopId/order')
-  createOrder(@Param(':shopId') shopId: number, @Body() createOrder: CreateOrderDto): Promise<OrderDto> {
+  createOrder(@Param(':shopId') shopId: string, @Body() createOrder: CreateOrderDto): Promise<OrderDto> {
     const userId = 1;
     return this.shopService.createOrder(shopId, userId, createOrder.ingredientIds, createOrder.type);
   }

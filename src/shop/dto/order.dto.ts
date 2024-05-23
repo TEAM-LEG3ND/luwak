@@ -17,8 +17,8 @@ export class OrderDto {
   @ApiProperty({ type: Ingredient, description: '주문에 포함된 재료 목록' })
   ingredients: Ingredient[];
 
-  @ApiProperty({ type: 'number', description: '주문 매장 id' })
-  shopId: number;
+  @ApiProperty({ type: 'string', description: '주문 매장 id' })
+  shopId: string;
 
   static fromEntity(entity: Order): OrderDto {
     const dto = new OrderDto();

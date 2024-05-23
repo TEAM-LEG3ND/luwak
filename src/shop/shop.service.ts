@@ -60,7 +60,7 @@ export class ShopService {
     return this.shopRepository.save(shop);
   }
 
-  async createOrder(shopId: number, userId: number, ingredients: string[], type: OrderType): Promise<OrderDto> {
+  async createOrder(shopId: string, userId: number, ingredients: string[], type: OrderType): Promise<OrderDto> {
     const shop = await this.shopRepository.findOne({
       where: {
         id: shopId,

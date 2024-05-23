@@ -6,14 +6,11 @@ import { OrderType } from 'src/common/domain/order-type';
 
 @Entity({ name: 'orders' })
 export class Order extends BaseEntity {
-  @PrimaryGeneratedColumn("uuid") 
-  id: string;
-
   @Column({ type: 'int' })
   userId: number;
 
-  @Column({ type: 'int' })
-  shopId: number;
+  @Column({ type: 'string' })
+  shopId: string;
 
   @Column({ type: 'bigint' })
   priceSum: BigInt;
