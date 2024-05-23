@@ -6,7 +6,7 @@ import { IsString, IsNumber } from 'class-validator';
 
 export class PaymentDto {
   @ApiProperty()
-  id: number;
+  id: string;
 
   @ApiProperty()
   paymentKey: string;
@@ -24,7 +24,7 @@ export class PaymentDto {
   cancels: CancelDto[];
 
   constructor(
-    id: number,
+    id: string,
     paymentKey: string,
     totalAmount: number,
     type: PaymentType,

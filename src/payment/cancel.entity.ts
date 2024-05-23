@@ -1,11 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, BaseEntity, Column, ManyToOne, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
+import { BaseEntity } from 'src/common/base.entity';
 import { Payment } from './payment.entity';
 
 @Entity()
 export class Cancel extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+  
   @Column({ comment: '결제 취소한 금액' })
   cancelAmount: number;
 

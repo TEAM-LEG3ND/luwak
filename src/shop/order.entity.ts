@@ -4,11 +4,8 @@ import { Ingredient } from './ingredient.entity';
 
 @Entity({ name: 'orders' })
 export class Order extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column()
-  orderId: string;
+  @PrimaryGeneratedColumn("uuid") 
+  id: string;
 
   @Column({ type: 'bigint' })
   priceSum: BigInt;

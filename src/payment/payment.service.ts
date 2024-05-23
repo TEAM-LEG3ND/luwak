@@ -34,7 +34,7 @@ export class PaymentService {
 
     // 서버 금액 검증
     const order = await this.orderRepository.findOne({
-      where: { orderId: orderId }
+      where: { id: orderId }
     });
 
     if (!order) {
