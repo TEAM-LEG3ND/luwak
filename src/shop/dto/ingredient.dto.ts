@@ -5,16 +5,16 @@ export class IngredientDto {
   @ApiProperty()
   id: string;
 
-  @ApiProperty()
+  @ApiProperty({ description: '재료 이름' })
   name: string;
 
-  @ApiProperty()
+  @ApiProperty({ description: '재료 단일 가격' })
   price: number;
 
-  @ApiProperty()
+  @ApiProperty({ description: '재료 상세 설명' })
   description: string;
 
-  @ApiProperty()
+  @ApiProperty({ description: '재료 썸네일 url' })
   thumbnail: string;
 
   static fromEntity(entity: Ingredient): IngredientDto {
