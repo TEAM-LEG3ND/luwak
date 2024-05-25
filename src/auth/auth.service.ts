@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, NotFoundException, InternalServerErrorException } from '@nestjs/common';
 import { User } from 'src/users/user.entity';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
@@ -11,6 +11,8 @@ import * as dotenv from 'dotenv';
 import { RefreshDto } from './dto/refresh.dto';
 import { CheckEmailDto } from './dto/checkEmail.dto';
 import { CheckNicknameDto } from './dto/checkNickname.dto';
+import { UserRepository } from './../users/user.repository';
+import { CreateUserDto } from './../users/dto/user.dto';
 
 dotenv.config();
 
@@ -20,6 +22,7 @@ export class AuthService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
     private jwtService: JwtService,
+    private customUserRepository: UserRepository,
   ) {}
 
   async signUp(signUpDto: SignUpDto): Promise<TokensDto> {
@@ -32,12 +35,12 @@ export class AuthService {
         );
       }
       const hashedPassword = await bcrypt.hash(password, 10);
-      const user = await this.usersRepository.create({
+      const createUserDto: CreateUserDto = {
         nickname,
         email,
         password: hashedPassword,
-      });
-      await this.usersRepository.save(user);
+      };
+      const user = await this.customUserRepository.createUser(createUserDto);
       const accessToken = this.jwtService.sign({ id: user.id }, { expiresIn: process.env.ACCESS_EXPIRES });
       const refreshToken = this.jwtService.sign({ id: user.id }, { expiresIn: process.env.REFRESH_EXPIRES });
       return new TokensDto(accessToken, refreshToken);
@@ -106,5 +109,13 @@ export class AuthService {
     const { nickname } = checkNicknameDto;
     const user = await this.usersRepository.findOne({ where: { nickname } });
     return !!user;
+  }
+
+  async getUserById(id: number) {
+    const user = await this.customUserRepository.findById(id);
+    if (user) {
+      return user;
+    }
+    throw new NotFoundException('Could not find the user');
   }
 }
