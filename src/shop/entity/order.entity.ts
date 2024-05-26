@@ -2,7 +2,6 @@ import { BaseEntity } from 'src/common/base.entity';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { Ingredient } from './ingredient.entity';
 import { OrderStatus } from 'src/common/domain/order-status';
-import { OrderType } from 'src/common/domain/order-type';
 import { SizeType } from 'src/common/domain/size-type';
 import { PackageType } from 'src/common/domain/package-type';
 import { TemperatureType } from 'src/common/domain/temperature-type';
