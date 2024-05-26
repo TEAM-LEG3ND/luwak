@@ -40,7 +40,7 @@ export class ShopController {
   @Post('/:shopId/order')
   createOrder(@Param('shopId') shopId: number, @Body() createOrder: CreateOrderDto): Promise<OrderDto> {
     const userId = 1;
-    return this.shopService.createOrder(shopId, userId, createOrder.ingredientIds, createOrder.type);
+    return this.shopService.createOrder(shopId, userId, createOrder);
   }
 
   @ApiOperation({ summary: '주문 목록 조회', description: '사용자가 생성한 주문 조회' })

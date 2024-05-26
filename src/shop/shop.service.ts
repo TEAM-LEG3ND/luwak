@@ -14,6 +14,7 @@ import { PaginationMeta } from 'src/common/pagination/pagination-meta';
 import { ShopDto } from './dto/shop.dto';
 import { SizeType } from 'src/common/domain/size-type';
 import { TemperatureType } from 'src/common/domain/temperature-type';
+import { CreateOrderDto } from './dto/create-order.dto';
 
 @Injectable()
 export class ShopService {
@@ -63,21 +64,14 @@ export class ShopService {
     return this.shopRepository.save(shop);
   }
 
-  async createOrder(
-    shopId: number,
-    userId: number,
-    ingredients: string[],
-    packageType: PackageType,
-    sizeType: SizeType,
-    temperatureType: TemperatureType,
-  ): Promise<OrderDto> {
+  async createOrder(shopId: number, userId: number, createOrderDto: CreateOrderDto): Promise<OrderDto> {
     const shop = await this.shopRepository.findOne({
       where: {
         id: shopId,
       },
     });
 
-    const targetIngredients = new Set(ingredients);
+    const targetIngredients = new Set(createOrderDto.ingredientIds);
     const orderIngredients = shop.ingredients.filter((ingredient) => targetIngredients.has(ingredient.id));
 
     if (shop == null || targetIngredients.size === 0 || orderIngredients.length === 0) {
@@ -87,9 +81,9 @@ export class ShopService {
     const newOrder = new Order();
     newOrder.ingredients = orderIngredients;
     newOrder.shopId = shopId;
-    newOrder.size = sizeType;
-    newOrder.temperature = temperatureType;
-    newOrder.package = packageType;
+    newOrder.size = createOrderDto.sizeType;
+    newOrder.temperature = createOrderDto.temperatureType;
+    newOrder.package = createOrderDto.packageType;
     newOrder.userId = userId;
     newOrder.priceSum = BigInt(orderIngredients.map((dto) => dto.price).reduce((sum, current) => sum + current, 0));
 
