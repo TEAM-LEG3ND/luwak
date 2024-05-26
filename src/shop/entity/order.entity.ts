@@ -32,6 +32,6 @@ export class Order extends BaseEntity {
   @Column({ type: 'enum', enum: OrderStatus })
   status: OrderStatus;
 
-  @Column({ type: 'enum', enum: OrderType })
+  @Column({ type: 'enum', enum: PackageType })
   package: PackageType;
 }

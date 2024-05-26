@@ -7,11 +7,13 @@ import { IngredientDto } from './dto/ingredient.dto';
 import { randomUUID } from 'crypto';
 import { Order } from './entity/order.entity';
 import { OrderDto } from './dto/order.dto';
-import { OrderType } from 'src/common/domain/order-type';
+import { PackageType } from 'src/common/domain/package-type';
 import { OffsetPaginationOption } from 'src/common/pagination/offset-pagination-option';
 import { PageResponse } from 'src/common/pagination/pagination-response';
 import { PaginationMeta } from 'src/common/pagination/pagination-meta';
 import { ShopDto } from './dto/shop.dto';
+import { SizeType } from 'src/common/domain/size-type';
+import { TemperatureType } from 'src/common/domain/temperature-type';
 
 @Injectable()
 export class ShopService {
@@ -61,7 +63,14 @@ export class ShopService {
     return this.shopRepository.save(shop);
   }
 
-  async createOrder(shopId: number, userId: number, ingredients: string[], type: OrderType): Promise<OrderDto> {
+  async createOrder(
+    shopId: number,
+    userId: number,
+    ingredients: string[],
+    packageType: PackageType,
+    sizeType: SizeType,
+    temperatureType: TemperatureType,
+  ): Promise<OrderDto> {
     const shop = await this.shopRepository.findOne({
       where: {
         id: shopId,
@@ -78,7 +87,9 @@ export class ShopService {
     const newOrder = new Order();
     newOrder.ingredients = orderIngredients;
     newOrder.shopId = shopId;
-    newOrder.type = type;
+    newOrder.size = sizeType;
+    newOrder.temperature = temperatureType;
+    newOrder.package = packageType;
     newOrder.userId = userId;
     newOrder.priceSum = BigInt(orderIngredients.map((dto) => dto.price).reduce((sum, current) => sum + current, 0));
 
