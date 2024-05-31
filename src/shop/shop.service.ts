@@ -11,6 +11,7 @@ import { OrderType } from 'src/common/domain/order-type';
 import { OffsetPaginationOption } from 'src/common/pagination/offset-pagination-option';
 import { PageResponse } from 'src/common/pagination/pagination-response';
 import { PaginationMeta } from 'src/common/pagination/pagination-meta';
+import { ShopDto } from './dto/shop.dto';
 
 @Injectable()
 export class ShopService {
@@ -21,18 +22,18 @@ export class ShopService {
     private readonly orderRepository: Repository<Order>,
   ) {}
 
-  async getAllShops(): Promise<Shop[]> {
-    const shops = this.shopRepository.find();
-    return shops;
+  async getAllShops(): Promise<ShopDto[]> {
+    const shops = await this.shopRepository.find();
+    return shops.map((shop) => ShopDto.fromEntity(shop));
   }
 
-  async getIngredientsByShop(shopId: number): Promise<Ingredient[]> {
+  async getIngredientsByShop(shopId: number): Promise<IngredientDto[]> {
     const shop = await this.shopRepository.findOne({
       where: {
         id: shopId,
       },
     });
-    return shop.ingredients;
+    return shop.ingredients.map((ingredient) => IngredientDto.fromEntity(ingredient));
   }
 
   async addIngredients(shopId: number, dto: IngredientDto[]): Promise<Shop> {
