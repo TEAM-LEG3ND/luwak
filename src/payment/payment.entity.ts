@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, Unique, OneToMany } from 'typeorm';
+import { Entity, Column, Unique, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseEntity } from 'src/common/base.entity';
 
 import { Cancel } from './cancel.entity';
@@ -8,6 +8,9 @@ import { PaymentType } from './payment.enum';
 @Entity()
 @Unique(['paymentKey', 'orderId'])
 export class Payment extends BaseEntity {
+  @PrimaryGeneratedColumn()
+  id: number;
+
   @Column()
   paymentKey: string;
 

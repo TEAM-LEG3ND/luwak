@@ -4,7 +4,9 @@ import { Payment } from './payment.entity';
 
 @Entity()
 export class Cancel extends BaseEntity {
-  
+  @PrimaryGeneratedColumn()
+  id: number;
+
   @Column({ comment: '결제 취소한 금액' })
   cancelAmount: number;
 

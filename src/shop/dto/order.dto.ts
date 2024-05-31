@@ -2,7 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { OrderType } from 'src/common/domain/order-type';
 import { Ingredient } from '../entity/ingredient.entity';
 import { Order } from '../entity/order.entity';
-import { Type } from 'class-transformer';
 
 export class OrderDto {
   @ApiProperty()
@@ -17,8 +16,8 @@ export class OrderDto {
   @ApiProperty({ type: Ingredient, description: '주문에 포함된 재료 목록' })
   ingredients: Ingredient[];
 
-  @ApiProperty({ type: 'string', description: '주문 매장 id' })
-  shopId: string;
+  @ApiProperty({ type: 'number', description: '주문 매장 id' })
+  shopId: number;
 
   static fromEntity(entity: Order): OrderDto {
     const dto = new OrderDto();

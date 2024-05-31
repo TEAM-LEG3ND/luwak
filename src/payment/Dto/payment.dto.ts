@@ -3,10 +3,11 @@ import { CancelDto } from './cancel.dto';
 import { PaymentType } from '../payment.enum';
 import { Payment } from '../payment.entity';
 import { IsString, IsNumber } from 'class-validator';
+import { PrimaryGeneratedColumn } from 'typeorm';
 
 export class PaymentDto {
-  @ApiProperty()
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @ApiProperty()
   paymentKey: string;
@@ -24,7 +25,7 @@ export class PaymentDto {
   cancels: CancelDto[];
 
   constructor(
-    id: string,
+    id: number,
     paymentKey: string,
     totalAmount: number,
     type: PaymentType,

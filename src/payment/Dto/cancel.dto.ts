@@ -4,7 +4,7 @@ import { Payment } from '../payment.entity';
 
 export class CancelDto {
   @ApiProperty()
-  id: string;
+  id: number;
 
   @ApiProperty()
   cancelAmount: number;
@@ -25,7 +25,7 @@ export class CancelDto {
   receiptKey: string;
 
   constructor(
-    id: string,
+    id: number,
     cancelAmount: number,
     cancelReason: string,
     refundableAmount: number,

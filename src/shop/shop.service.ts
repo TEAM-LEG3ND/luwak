@@ -26,7 +26,7 @@ export class ShopService {
     return shops;
   }
 
-  async getIngredientsByShop(shopId: string): Promise<Ingredient[]> {
+  async getIngredientsByShop(shopId: number): Promise<Ingredient[]> {
     const shop = await this.shopRepository.findOne({
       where: {
         id: shopId,
@@ -35,7 +35,7 @@ export class ShopService {
     return shop.ingredients;
   }
 
-  async addIngredients(shopId: string, dto: IngredientDto[]): Promise<Shop> {
+  async addIngredients(shopId: number, dto: IngredientDto[]): Promise<Shop> {
     const validationResult = await this.validateIngredients(shopId, dto);
     if (!validationResult) {
       throw new HttpException('validation fail', 400);
@@ -60,7 +60,7 @@ export class ShopService {
     return this.shopRepository.save(shop);
   }
 
-  async createOrder(shopId: string, userId: number, ingredients: string[], type: OrderType): Promise<OrderDto> {
+  async createOrder(shopId: number, userId: number, ingredients: string[], type: OrderType): Promise<OrderDto> {
     const shop = await this.shopRepository.findOne({
       where: {
         id: shopId,
@@ -88,14 +88,10 @@ export class ShopService {
     const queryBuilder = this.orderRepository.createQueryBuilder('getOrdersByUserId');
 
     queryBuilder
-      .orderBy('createdAt', pageOption.order)
+      .where('getOrdersByUserId.userId = :userId', { userId })
+      .orderBy('getOrdersByUserId.created_at', pageOption.order)
       .skip(pageOption.skip)
-      .take(pageOption.take)
-      .where({
-        where: {
-          userId: userId,
-        },
-      });
+      .take(pageOption.take);
 
     const count = await queryBuilder.getCount();
     const { entities } = await queryBuilder.getRawAndEntities();
@@ -108,7 +104,7 @@ export class ShopService {
     );
   }
 
-  private async validateIngredients(shopId: string, dto: IngredientDto[]): Promise<boolean> {
+  private async validateIngredients(shopId: number, dto: IngredientDto[]): Promise<boolean> {
     const nonNull = dto.every((dto) => dto.name != null && dto.thumbnail != null);
     const priceValid = dto.every((dto) => dto.price >= 0);
     const shop = await this.shopRepository.findOne({
