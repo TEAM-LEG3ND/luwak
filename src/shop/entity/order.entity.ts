@@ -6,8 +6,8 @@ import { OrderType } from 'src/common/domain/order-type';
 
 @Entity({ name: 'orders' })
 export class Order extends BaseEntity {
-  @PrimaryGeneratedColumn("uuid")
-  id : string;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({ type: 'int' })
   userId: number;

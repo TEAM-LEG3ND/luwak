@@ -35,7 +35,10 @@ export class PaymentController {
   @ApiOperation({ summary: '결제 취소 요청', description: '결제 취소 요청 생성' })
   @ApiOkResponse({ description: '결제 취소 성공!', type: PaymentDto })
   @Post(':paymentKey/cancel')
-  async cancelByPaymentKey(@Param('paymentKey') paymentKey: string, @Body() data: CancelCreateDto): Promise<PaymentDto> {
+  async cancelByPaymentKey(
+    @Param('paymentKey') paymentKey: string,
+    @Body() data: CancelCreateDto,
+  ): Promise<PaymentDto> {
     const payment = await this.paymentService.cancelByPaymentKey(paymentKey, data);
     return PaymentDto.fromPayment(payment);
   }

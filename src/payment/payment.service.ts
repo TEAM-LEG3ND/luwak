@@ -95,7 +95,7 @@ export class PaymentService {
   }
 
   async findByOrderId(orderId: string): Promise<Payment> {
-    const payment = await this.paymentRepository.findOne({where: {orderId}});
+    const payment = await this.paymentRepository.findOne({ where: { orderId } });
 
     if (!payment) {
       throw new NotFoundException('Payment not found');

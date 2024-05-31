@@ -5,7 +5,7 @@ import { Ingredient } from './entity/ingredient.entity';
 @Entity({ name: 'shops', synchronize: false })
 export class Shop {
   @PrimaryGeneratedColumn()
-  id : number;
+  id: number;
 
   @Column()
   name: string;

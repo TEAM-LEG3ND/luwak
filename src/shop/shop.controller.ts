@@ -47,7 +47,7 @@ export class ShopController {
   @ApiOkResponse({ type: OrderDto, isArray: true })
   @Get('/orders')
   getOrders(@Query() pageOption: OffsetPaginationOption): Promise<PageResponse<OrderDto>> {
-    const userId = 35; 
+    const userId = 35;
     return this.shopService.getOrdersByUserId(userId, pageOption);
   }
 }
