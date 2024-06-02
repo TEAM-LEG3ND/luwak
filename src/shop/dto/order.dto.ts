@@ -1,15 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { OrderType } from 'src/common/domain/order-type';
+import { PackageType } from 'src/common/domain/package-type';
 import { Ingredient } from '../entity/ingredient.entity';
 import { Order } from '../entity/order.entity';
-import { Type } from 'class-transformer';
+import { SizeType } from 'src/common/domain/size-type';
+import { TemperatureType } from 'src/common/domain/temperature-type';
 
 export class OrderDto {
   @ApiProperty()
   orderId: number;
 
-  @ApiProperty({ type: 'enum', enum: OrderType, example: 'TO_GO', description: '주문 타입' })
-  type: OrderType;
+  @ApiProperty({ type: 'enum', enum: PackageType, example: 'TO_GO', description: '포장 타입' })
+  packageType: PackageType;
+
+  @ApiProperty({ type: 'enum', enum: SizeType, example: 'MEDIUM', description: '사이즈' })
+  sizeType: SizeType;
+
+  @ApiProperty({ type: 'enum', enum: TemperatureType, example: 'ICE', description: '음료 온도 타입' })
+  temperatureType: TemperatureType;
 
   @ApiProperty({ type: BigInt, description: '주문 총 금액' })
   priceSum: BigInt;
@@ -23,7 +30,9 @@ export class OrderDto {
   static fromEntity(entity: Order): OrderDto {
     const dto = new OrderDto();
     dto.orderId = entity.id;
-    dto.type = entity.type;
+    dto.packageType = entity.package;
+    dto.sizeType = entity.size;
+    dto.temperatureType = entity.temperature;
     dto.priceSum = entity.priceSum;
     dto.shopId = entity.shopId;
     dto.ingredients = entity.ingredients;

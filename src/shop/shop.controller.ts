@@ -48,7 +48,7 @@ export class ShopController {
     @Body() createOrder: CreateOrderDto,
   ): Promise<OrderDto> {
     const userId = user.id;
-    return this.shopService.createOrder(shopId, userId, createOrder.ingredientIds, createOrder.type);
+    return this.shopService.createOrder(shopId, userId, createOrder);
   }
 
   @UseGuards(JwtAuthGuard)
