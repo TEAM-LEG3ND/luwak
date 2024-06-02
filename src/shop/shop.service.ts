@@ -90,6 +90,31 @@ export class ShopService {
     return await this.orderRepository.save(newOrder).then((entity) => OrderDto.fromEntity(entity));
   }
 
+  async getOrdersByOrderIdAndUser(userId: number, orderId: string, pageOption: OffsetPaginationOption): Promise<PageResponse<OrderDto> {
+    const queryBuilder = this.orderRepository.createQueryBuilder('getOrdersByOrderIdAndUser');
+
+    queryBuilder
+    .orderBy('createdAt', pageOption.order)
+    .skip(pageOption.skip)
+    .take(pageOption.take)
+    .where({
+      where: {
+        userId: userId,
+        orderId: orderId
+      }
+    });
+
+    const count = await queryBuilder.getCount();
+    const { entities } = await queryBuilder.getRawAndEntities();
+
+    const pageMeta = new PaginationMeta({ pageOption: pageOption, itemCount: count });
+
+    return new PageResponse(
+      entities.map((entity) => OrderDto.fromEntity(entity)),
+      pageMeta,
+    );
+  }
+
   async getOrdersByUserId(userId: number, pageOption: OffsetPaginationOption): Promise<PageResponse<OrderDto>> {
     const queryBuilder = this.orderRepository.createQueryBuilder('getOrdersByUserId');
 
