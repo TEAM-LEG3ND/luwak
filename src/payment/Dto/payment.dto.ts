@@ -3,9 +3,10 @@ import { CancelDto } from './cancel.dto';
 import { PaymentType } from '../payment.enum';
 import { Payment } from '../payment.entity';
 import { IsString, IsNumber } from 'class-validator';
+import { PrimaryGeneratedColumn } from 'typeorm';
 
 export class PaymentDto {
-  @ApiProperty()
+  @PrimaryGeneratedColumn()
   id: number;
 
   @ApiProperty()
@@ -18,7 +19,7 @@ export class PaymentDto {
   type: PaymentType;
 
   @ApiProperty()
-  orderId: number;
+  orderId: string;
 
   @ApiProperty()
   cancels: CancelDto[];
@@ -28,7 +29,7 @@ export class PaymentDto {
     paymentKey: string,
     totalAmount: number,
     type: PaymentType,
-    orderId: number,
+    orderId: string,
     cancels: CancelDto[],
   ) {
     this.id = id;
@@ -57,8 +58,8 @@ export class ConfirmPaymentDto {
   paymentKey: string;
 
   @ApiProperty()
-  @IsNumber()
-  orderId: number;
+  @IsString()
+  orderId: string;
 
   @ApiProperty()
   @IsNumber()

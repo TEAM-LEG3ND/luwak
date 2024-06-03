@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, Unique, OneToMany } from 'typeorm';
+import { Entity, Column, Unique, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity } from 'src/common/base.entity';
 
 import { Cancel } from './cancel.entity';
 
@@ -23,7 +24,7 @@ export class Payment extends BaseEntity {
 
   @Column()
   // 주문 ID
-  orderId: number;
+  orderId: string;
 
   @OneToMany(() => Cancel, (cancel) => cancel.payment)
   // 취소 객체

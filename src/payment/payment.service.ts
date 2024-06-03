@@ -28,8 +28,8 @@ export class PaymentService {
     this.logger.warn(JSON.stringify(data));
 
     // 형식 판별
-    if (isNaN(orderId) || isNaN(amount)) {
-      throw new HttpException(`[Payment Error] orderId or amount is NaN + ${orderId} + ${amount}`, 400);
+    if (isNaN(amount)) {
+      throw new HttpException(`[Payment Error] amount is NaN + ${amount}`, 400);
     }
 
     // 서버 금액 검증
@@ -94,7 +94,7 @@ export class PaymentService {
     return payment;
   }
 
-  async findByOrderId(orderId: number): Promise<Payment> {
+  async findByOrderId(orderId: string): Promise<Payment> {
     const payment = await this.paymentRepository.findOne({ where: { orderId } });
 
     if (!payment) {
