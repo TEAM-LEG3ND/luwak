@@ -37,16 +37,22 @@ export class ShopController {
     return this.shopService.addIngredients(shopId, ingredientDtos);
   }
 
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: '주문 생성', description: '해당 매장에 주문 생성' })
   @ApiOkResponse({ description: '정상적으로 주문 생성 완료', type: OrderDto })
   @UseGuards(JwtAuthGuard)
   @ApiBody({ type: [CreateOrderDto] })
   @Post('/:shopId/order')
-  createOrder(@Param('shopId') shopId: number,@Auth() user: User, @Body() createOrder: CreateOrderDto): Promise<OrderDto> {
+  createOrder(
+    @Param('shopId') shopId: number,
+    @Auth() user: User,
+    @Body() createOrder: CreateOrderDto,
+  ): Promise<OrderDto> {
     const userId = user.id;
-    return this.shopService.createOrder(shopId, userId, createOrder.ingredientIds, createOrder.type);
+    return this.shopService.createOrder(shopId, userId, createOrder);
   }
 
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: '주문 목록 조회', description: '사용자가 생성한 주문 조회' })
   @ApiOkResponse({ type: OrderDto, isArray: true })
   @UseGuards(JwtAuthGuard)
