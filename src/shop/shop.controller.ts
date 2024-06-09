@@ -40,8 +40,7 @@ export class ShopController {
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: '주문 생성', description: '해당 매장에 주문 생성' })
   @ApiOkResponse({ description: '정상적으로 주문 생성 완료', type: OrderDto })
-  @UseGuards(JwtAuthGuard)
-  @ApiBody({ type: [CreateOrderDto] })
+  @ApiBody({ type: CreateOrderDto })
   @Post('/:shopId/order')
   createOrder(
     @Param('shopId') shopId: number,
@@ -53,12 +52,20 @@ export class ShopController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: '주문 목록 조회', description: '사용자가 생성한 주문 조회' })
+  @ApiOperation({ summary: '주문 목록 조회', description: '사용자가 생성한 주문 목록 조회' })
   @ApiOkResponse({ type: OrderDto, isArray: true })
-  @UseGuards(JwtAuthGuard)
   @Get('/orders')
   getOrders(@Query() pageOption: OffsetPaginationOption, @Auth() user: User): Promise<PageResponse<OrderDto>> {
     const userId = user.id;
     return this.shopService.getOrdersByUserId(userId, pageOption);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: '주문 단건 조회', description: '사용자가 생성한 주문 단건 조회' })
+  @ApiOkResponse({ type: OrderDto, isArray: false })
+  @Get('/orders/:orderId')
+  getOrder(@Auth() user: User, @Param('orderId') orderId: string): Promise<OrderDto> {
+    const userId = user.id;
+    return this.shopService.getOrdersByOrderIdAndUser(userId, orderId);
   }
 }
