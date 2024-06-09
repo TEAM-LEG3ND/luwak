@@ -7,7 +7,7 @@ import { TemperatureType } from 'src/common/domain/temperature-type';
 
 export class OrderDto {
   @ApiProperty()
-  orderId: number;
+  orderId: string;
 
   @ApiProperty({ type: 'enum', enum: PackageType, example: 'TO_GO', description: '포장 타입' })
   packageType: PackageType;

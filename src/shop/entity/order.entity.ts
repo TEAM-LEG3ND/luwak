@@ -8,8 +8,8 @@ import { TemperatureType } from 'src/common/domain/temperature-type';
 
 @Entity({ name: 'orders' })
 export class Order extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({ type: 'int' })
   userId: number;

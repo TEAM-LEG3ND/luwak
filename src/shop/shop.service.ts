@@ -119,14 +119,10 @@ export class ShopService {
     const queryBuilder = this.orderRepository.createQueryBuilder('getOrdersByUserId');
 
     queryBuilder
-      .orderBy('createdAt', pageOption.order)
+      .where('getOrdersByUserId.userId = :userId', { userId })
+      .orderBy('getOrdersByUserId.created_at', pageOption.order)
       .skip(pageOption.skip)
-      .take(pageOption.take)
-      .where({
-        where: {
-          userId: userId,
-        },
-      });
+      .take(pageOption.take);
 
     const count = await queryBuilder.getCount();
     const { entities } = await queryBuilder.getRawAndEntities();
