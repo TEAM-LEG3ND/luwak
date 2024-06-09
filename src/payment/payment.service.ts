@@ -41,10 +41,6 @@ export class PaymentService {
       throw new HttpException('[Payment Error] order data not found', 404);
     }
 
-    if (order.priceSum !== BigInt(amount)) {
-      throw new HttpException('[Payment Error] payment amount validation fail', 400);
-    }
-
     // toss payment 요청
     const newPayment = new Payment();
     newPayment.paymentKey = paymentKey;
