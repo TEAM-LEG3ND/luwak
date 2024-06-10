@@ -13,7 +13,15 @@ export class Shop {
   @Column()
   description: string;
 
-  @Column({ type: 'point', nullable: true, spatialFeatureType: 'Point' })
+  @Column({
+    type: 'point',
+    nullable: true,
+    spatialFeatureType: 'Point',
+    transformer: {
+      from: (v) => v,
+      to: (v) => `${v.x}, ${v.y}`,
+    },
+  })
   location: Point;
 
   @Column({ type: 'json' })

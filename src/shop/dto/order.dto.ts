@@ -18,8 +18,8 @@ export class OrderDto {
   @ApiProperty({ type: 'enum', enum: TemperatureType, example: 'ICE', description: '음료 온도 타입' })
   temperatureType: TemperatureType;
 
-  @ApiProperty({ type: BigInt, description: '주문 총 금액' })
-  priceSum: BigInt;
+  @ApiProperty({ type: 'string', description: '주문 총 금액' })
+  priceSum: string;
 
   @ApiProperty({ type: Ingredient, description: '주문에 포함된 재료 목록' })
   ingredients: Ingredient[];

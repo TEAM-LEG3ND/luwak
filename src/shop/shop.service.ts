@@ -7,14 +7,12 @@ import { IngredientDto } from './dto/ingredient.dto';
 import { randomUUID } from 'crypto';
 import { Order } from './entity/order.entity';
 import { OrderDto } from './dto/order.dto';
-import { PackageType } from 'src/common/domain/package-type';
 import { OffsetPaginationOption } from 'src/common/pagination/offset-pagination-option';
 import { PageResponse } from 'src/common/pagination/pagination-response';
 import { PaginationMeta } from 'src/common/pagination/pagination-meta';
 import { ShopDto } from './dto/shop.dto';
-import { SizeType } from 'src/common/domain/size-type';
-import { TemperatureType } from 'src/common/domain/temperature-type';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { OrderStatus } from 'src/common/domain/order-status';
 
 @Injectable()
 export class ShopService {
@@ -75,7 +73,7 @@ export class ShopService {
     const orderIngredients = shop.ingredients.filter((ingredient) => targetIngredients.has(ingredient.id));
 
     if (shop == null || targetIngredients.size === 0 || orderIngredients.length === 0) {
-      throw new HttpException('validation fail', 400);
+      throw new HttpException('validation fail: shop not have such ', 400);
     }
 
     const newOrder = new Order();
@@ -85,9 +83,22 @@ export class ShopService {
     newOrder.temperature = createOrderDto.temperatureType;
     newOrder.package = createOrderDto.packageType;
     newOrder.userId = userId;
-    newOrder.priceSum = BigInt(orderIngredients.map((dto) => dto.price).reduce((sum, current) => sum + current, 0));
+    newOrder.priceSum = BigInt(
+      orderIngredients.map((dto) => dto.price).reduce((sum, current) => sum + current, 0),
+    ).toString();
+    newOrder.status = OrderStatus.READY;
 
     return await this.orderRepository.save(newOrder).then((entity) => OrderDto.fromEntity(entity));
+  }
+
+  async getOrdersByOrderIdAndUser(userId: number, orderId: string): Promise<OrderDto> {
+    const order = await this.orderRepository.findOne({
+      where: {
+        id: orderId,
+        userId: userId,
+      },
+    });
+    return OrderDto.fromEntity(order);
   }
 
   async getOrdersByUserId(userId: number, pageOption: OffsetPaginationOption): Promise<PageResponse<OrderDto>> {
@@ -113,13 +124,7 @@ export class ShopService {
   private async validateIngredients(shopId: number, dto: IngredientDto[]): Promise<boolean> {
     const nonNull = dto.every((dto) => dto.name != null && dto.thumbnail != null);
     const priceValid = dto.every((dto) => dto.price >= 0);
-    const shop = await this.shopRepository.findOne({
-      where: {
-        id: shopId,
-      },
-    });
-    const shopIngredientsId = shop.ingredients.map((entity) => entity.id);
-    const ingredientsValid = dto.map((dto) => dto.id).every((dtoId) => shopIngredientsId.includes(dtoId));
-    return nonNull && priceValid && ingredientsValid;
+    console.log(nonNull, priceValid);
+    return nonNull && priceValid;
   }
 }

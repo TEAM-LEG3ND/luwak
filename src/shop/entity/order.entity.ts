@@ -18,7 +18,7 @@ export class Order extends BaseEntity {
   shopId: number;
 
   @Column({ type: 'bigint' })
-  priceSum: BigInt;
+  priceSum: string;
 
   @Column({ type: 'enum', enum: SizeType })
   size: SizeType;
