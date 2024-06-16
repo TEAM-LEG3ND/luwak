@@ -56,6 +56,7 @@ export class ShopService {
         name: dto.name,
         description: dto.description,
         thumbnail: dto.thumbnail,
+        tags: dto.tags,
       };
       shop.ingredients.push(newIngredient);
     });
