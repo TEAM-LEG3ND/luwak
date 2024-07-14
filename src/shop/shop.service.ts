@@ -95,8 +95,6 @@ export class ShopService {
         return orderIngredient;
       });
 
-    console.log(targetIngredients);
-    console.log(orderIngredients);
     if (shop == null || targetIngredients.size === 0 || orderIngredients.length === 0) {
       throw new HttpException('validation fail: shop not have such ', 400);
     }

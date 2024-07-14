@@ -55,7 +55,6 @@ export class ShopController {
     @Body(new ValidationPipe({ transform: true })) createOrder: CreateOrderDto,
   ): Promise<OrderDto> {
     const userId = user.id;
-    console.log(createOrder);
     return this.shopService.createOrder(shopId, userId, createOrder);
   }
 
