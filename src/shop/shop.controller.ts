@@ -23,6 +23,13 @@ export class ShopController {
     return this.shopService.getAllShops();
   }
 
+  @ApiOperation({ summary: '매장 단건 조회', description: '매장 단건 조회' })
+  @ApiOkResponse({ type: ShopDto })
+  @Get('/:shopId')
+  getShopByShopId(@Param('shopId') shopId: number): Promise<ShopDto> {
+    return this.shopService.getShopByShopId(shopId);
+  }
+
   @ApiOperation({ summary: '매장 재료 목록 조회', description: '해당 매장의 재료 목록 조회' })
   @ApiOkResponse({ type: IngredientDto, isArray: true })
   @Get('/:shopId/ingredients')
