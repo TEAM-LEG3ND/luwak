@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Shop } from './shop.entity';
 import { Ingredient } from './entity/ingredient.entity';
@@ -34,6 +34,9 @@ export class ShopService {
         id: shopId,
       },
     });
+    if (shop == null) {
+      throw new HttpException('해당 매장을 찾을 수 없습니다', HttpStatus.NOT_FOUND);
+    }
     return ShopDto.fromEntity(shop);
   }
 
