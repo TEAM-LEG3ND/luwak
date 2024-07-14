@@ -27,6 +27,9 @@ export class OrderDto {
   @ApiProperty({ type: 'number', description: '주문 매장 id' })
   shopId: number;
 
+  @ApiProperty({ type: Date, description: '주문 생성 일시' })
+  createdDate: Date;
+
   static fromEntity(entity: Order): OrderDto {
     const dto = new OrderDto();
     dto.orderId = entity.id;
@@ -36,6 +39,7 @@ export class OrderDto {
     dto.priceSum = entity.priceSum;
     dto.shopId = entity.shopId;
     dto.ingredients = entity.ingredients;
+    dto.createdDate = entity.created_at;
     return dto;
   }
 }
