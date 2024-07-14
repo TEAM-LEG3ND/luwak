@@ -78,7 +78,7 @@ export class ShopService {
       },
     });
 
-    const targetIngredients = new Set(createOrderDto.ingredientIds);
+    const targetIngredients = new Set(createOrderDto.ingredient?.map((ingredient) => ingredient.ingredientId));
     const orderIngredients = shop.ingredients.filter((ingredient) => targetIngredients.has(ingredient.id));
 
     if (shop == null || targetIngredients.size === 0 || orderIngredients.length === 0) {
