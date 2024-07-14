@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UseGuards, ValidationPipe } from '@nestjs/common';
 import { ShopService } from './shop.service';
 import { Shop } from './shop.entity';
 import { IngredientDto } from './dto/ingredient.dto';
@@ -52,9 +52,10 @@ export class ShopController {
   createOrder(
     @Param('shopId') shopId: number,
     @Auth() user: User,
-    @Body() createOrder: CreateOrderDto,
+    @Body(new ValidationPipe({ transform: true })) createOrder: CreateOrderDto,
   ): Promise<OrderDto> {
     const userId = user.id;
+    console.log(createOrder);
     return this.shopService.createOrder(shopId, userId, createOrder);
   }
 

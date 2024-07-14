@@ -4,6 +4,7 @@ import { Ingredient } from '../entity/ingredient.entity';
 import { Order } from '../entity/order.entity';
 import { SizeType } from 'src/common/domain/size-type';
 import { TemperatureType } from 'src/common/domain/temperature-type';
+import { OrderIngredient } from '../entity/order-ingredient.entity';
 
 export class OrderDto {
   @ApiProperty()
@@ -22,7 +23,7 @@ export class OrderDto {
   priceSum: string;
 
   @ApiProperty({ type: Ingredient, description: '주문에 포함된 재료 목록' })
-  ingredients: Ingredient[];
+  ingredients: OrderIngredient[];
 
   @ApiProperty({ type: 'number', description: '주문 매장 id' })
   shopId: number;

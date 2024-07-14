@@ -1,10 +1,10 @@
 import { BaseEntity } from 'src/common/base.entity';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { Ingredient } from './ingredient.entity';
 import { OrderStatus } from 'src/common/domain/order-status';
 import { SizeType } from 'src/common/domain/size-type';
 import { PackageType } from 'src/common/domain/package-type';
 import { TemperatureType } from 'src/common/domain/temperature-type';
+import { OrderIngredient } from './order-ingredient.entity';
 
 @Entity({ name: 'orders' })
 export class Order extends BaseEntity {
@@ -27,7 +27,7 @@ export class Order extends BaseEntity {
   temperature: TemperatureType;
 
   @Column({ type: 'json' })
-  ingredients: Ingredient[];
+  ingredients: OrderIngredient[];
 
   @Column({ type: 'enum', enum: OrderStatus })
   status: OrderStatus;

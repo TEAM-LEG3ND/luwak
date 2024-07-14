@@ -13,6 +13,7 @@ import { PaginationMeta } from 'src/common/pagination/pagination-meta';
 import { ShopDto } from './dto/shop.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderStatus } from 'src/common/domain/order-status';
+import { OrderIngredient } from './entity/order-ingredient.entity';
 
 @Injectable()
 export class ShopService {
@@ -81,9 +82,21 @@ export class ShopService {
       },
     });
 
-    const targetIngredients = new Set(createOrderDto.ingredient?.map((ingredient) => ingredient.ingredientId));
-    const orderIngredients = shop.ingredients.filter((ingredient) => targetIngredients.has(ingredient.id));
+    const targetIngredients = new Set(createOrderDto.ingredients?.map((ingredient) => ingredient.ingredientId));
+    const ingredientQuantityMap = new Map(
+      createOrderDto.ingredients.map((ingredient) => [ingredient.ingredientId, ingredient.quantity]),
+    );
+    const orderIngredients = shop.ingredients
+      .filter((ingredient) => targetIngredients.has(ingredient.id))
+      .map((existedIngredient) => {
+        let orderIngredient = new OrderIngredient();
+        orderIngredient.ingredient = existedIngredient;
+        orderIngredient.quantity = ingredientQuantityMap.get(orderIngredient.ingredient.id);
+        return orderIngredient;
+      });
 
+    console.log(targetIngredients);
+    console.log(orderIngredients);
     if (shop == null || targetIngredients.size === 0 || orderIngredients.length === 0) {
       throw new HttpException('validation fail: shop not have such ', 400);
     }
@@ -96,7 +109,7 @@ export class ShopService {
     newOrder.package = createOrderDto.packageType;
     newOrder.userId = userId;
     newOrder.priceSum = BigInt(
-      orderIngredients.map((dto) => dto.price).reduce((sum, current) => sum + current, 0),
+      orderIngredients.map((dto) => dto.ingredient.price).reduce((sum, current) => sum + current, 0),
     ).toString();
     newOrder.status = OrderStatus.READY;
 

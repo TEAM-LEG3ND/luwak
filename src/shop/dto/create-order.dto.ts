@@ -8,7 +8,7 @@ import { CreateOrderIngredientDto } from './create-order-ingredient.dto';
 export class CreateOrderDto {
   @ApiProperty({ type: CreateOrderIngredientDto, isArray: true })
   @IsArray()
-  ingredient: CreateOrderIngredientDto[];
+  ingredients: CreateOrderIngredientDto[];
 
   @ApiProperty({ type: 'enum', enum: PackageType, example: 'TO_GO' })
   @IsEnum(PackageType)
