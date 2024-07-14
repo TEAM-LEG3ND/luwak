@@ -28,6 +28,15 @@ export class ShopService {
     return shops.map((shop) => ShopDto.fromEntity(shop));
   }
 
+  async getShopByShopId(shopId: number): Promise<ShopDto> {
+    const shop = await this.shopRepository.findOne({
+      where: {
+        id: shopId,
+      },
+    });
+    return ShopDto.fromEntity(shop);
+  }
+
   async getIngredientsByShop(shopId: number): Promise<IngredientDto[]> {
     const shop = await this.shopRepository.findOne({
       where: {
