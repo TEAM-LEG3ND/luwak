@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Shop } from './shop.entity';
 import { Ingredient } from './entity/ingredient.entity';
@@ -13,6 +13,7 @@ import { PaginationMeta } from 'src/common/pagination/pagination-meta';
 import { ShopDto } from './dto/shop.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderStatus } from 'src/common/domain/order-status';
+import { OrderIngredient } from './entity/order-ingredient.entity';
 
 @Injectable()
 export class ShopService {
@@ -26,6 +27,18 @@ export class ShopService {
   async getAllShops(): Promise<ShopDto[]> {
     const shops = await this.shopRepository.find();
     return shops.map((shop) => ShopDto.fromEntity(shop));
+  }
+
+  async getShopByShopId(shopId: number): Promise<ShopDto> {
+    const shop = await this.shopRepository.findOne({
+      where: {
+        id: shopId,
+      },
+    });
+    if (shop == null) {
+      throw new HttpException('해당 매장을 찾을 수 없습니다', HttpStatus.NOT_FOUND);
+    }
+    return ShopDto.fromEntity(shop);
   }
 
   async getIngredientsByShop(shopId: number): Promise<IngredientDto[]> {
@@ -69,8 +82,18 @@ export class ShopService {
       },
     });
 
-    const targetIngredients = new Set(createOrderDto.ingredientIds);
-    const orderIngredients = shop.ingredients.filter((ingredient) => targetIngredients.has(ingredient.id));
+    const targetIngredients = new Set(createOrderDto.ingredients?.map((ingredient) => ingredient.ingredientId));
+    const ingredientQuantityMap = new Map(
+      createOrderDto.ingredients.map((ingredient) => [ingredient.ingredientId, ingredient.quantity]),
+    );
+    const orderIngredients = shop.ingredients
+      .filter((ingredient) => targetIngredients.has(ingredient.id))
+      .map((existedIngredient) => {
+        let orderIngredient = new OrderIngredient();
+        orderIngredient.ingredient = existedIngredient;
+        orderIngredient.quantity = ingredientQuantityMap.get(orderIngredient.ingredient.id);
+        return orderIngredient;
+      });
 
     if (shop == null || targetIngredients.size === 0 || orderIngredients.length === 0) {
       throw new HttpException('validation fail: shop not have such ', 400);
@@ -84,7 +107,7 @@ export class ShopService {
     newOrder.package = createOrderDto.packageType;
     newOrder.userId = userId;
     newOrder.priceSum = BigInt(
-      orderIngredients.map((dto) => dto.price).reduce((sum, current) => sum + current, 0),
+      orderIngredients.map((dto) => dto.ingredient.price).reduce((sum, current) => sum + current, 0),
     ).toString();
     newOrder.status = OrderStatus.READY;
 

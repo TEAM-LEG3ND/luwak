@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UseGuards, ValidationPipe } from '@nestjs/common';
 import { ShopService } from './shop.service';
 import { Shop } from './shop.entity';
 import { IngredientDto } from './dto/ingredient.dto';
@@ -23,6 +23,13 @@ export class ShopController {
     return this.shopService.getAllShops();
   }
 
+  @ApiOperation({ summary: '매장 단건 조회', description: '매장 단건 조회' })
+  @ApiOkResponse({ type: ShopDto })
+  @Get('/:shopId')
+  getShopByShopId(@Param('shopId') shopId: number): Promise<ShopDto> {
+    return this.shopService.getShopByShopId(shopId);
+  }
+
   @ApiOperation({ summary: '매장 재료 목록 조회', description: '해당 매장의 재료 목록 조회' })
   @ApiOkResponse({ type: IngredientDto, isArray: true })
   @Get('/:shopId/ingredients')
@@ -45,7 +52,7 @@ export class ShopController {
   createOrder(
     @Param('shopId') shopId: number,
     @Auth() user: User,
-    @Body() createOrder: CreateOrderDto,
+    @Body(new ValidationPipe({ transform: true })) createOrder: CreateOrderDto,
   ): Promise<OrderDto> {
     const userId = user.id;
     return this.shopService.createOrder(shopId, userId, createOrder);
