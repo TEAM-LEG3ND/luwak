@@ -17,6 +17,9 @@ export class IngredientDto {
   @ApiProperty({ description: '재료 썸네일 url' })
   thumbnail: string;
 
+  @ApiProperty({ description: '재료 태그' })
+  tags: string[];
+
   static fromEntity(entity: Ingredient): IngredientDto {
     const dto = new IngredientDto();
     dto.id = entity.id;
@@ -24,6 +27,7 @@ export class IngredientDto {
     dto.price = entity.price;
     dto.description = entity.description;
     dto.thumbnail = entity.thumbnail;
+    dto.tags = entity.tags;
     return dto;
   }
 }
