@@ -22,7 +22,7 @@ export class OrderDto {
   @ApiProperty({ type: 'string', description: '주문 총 금액' })
   priceSum: string;
 
-  @ApiProperty({ type: Ingredient, description: '주문에 포함된 재료 목록' })
+  @ApiProperty({ type: OrderIngredient, isArray: true, description: '주문에 포함된 재료 목록' })
   ingredients: OrderIngredient[];
 
   @ApiProperty({ type: 'number', description: '주문 매장 id' })
